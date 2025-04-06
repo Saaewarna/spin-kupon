@@ -1,7 +1,12 @@
 import { google } from 'googleapis';
 
+if (!process.env.GOOGLE_SERVICE_ACCOUNT) {
+  throw new Error("Missing GOOGLE_SERVICE_ACCOUNT environment variable");
+}
 const auth = new google.auth.GoogleAuth({
-  credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT),
+  credentials: JSON.parse(
+    Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT, 'base64').toString('utf-8')
+  )
   scopes: ['https://www.googleapis.com/auth/spreadsheets']
 });
 
