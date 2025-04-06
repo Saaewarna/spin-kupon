@@ -1,3 +1,17 @@
+import { google } from 'googleapis';
+
+if (!process.env.GOOGLE_SERVICE_ACCOUNT) {
+  throw new Error("Missing GOOGLE_SERVICE_ACCOUNT env var");
+}
+
+const auth = new google.auth.GoogleAuth({
+  credentials: JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT, 'base64').toString('utf-8')),
+  scopes: ['https://www.googleapis.com/auth/spreadsheets']
+});
+
+const SPREADSHEET_ID = '1_fssQRK_38Ods7SW26Nmax6p5Gm1nfU0rP5JCjajlA4';
+const SHEET_KUPON = 'Sheet1';
+
 export default async function handler(req, res) {
   const { kode, user } = req.query;
 
@@ -6,8 +20,8 @@ export default async function handler(req, res) {
     const sheets = google.sheets({ version: 'v4', auth: client });
 
     const result = await sheets.spreadsheets.values.get({
-      const SPREADSHEET_ID = '1_fssQRK_38Ods7SW26Nmax6p5Gm1nfU0rP5JCjajlA4';
-      const SHEET_KUPON = 'Sheet1';
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${SHEET_KUPON}!A:C`,
     });
 
     const rows = result.data.values || [];
@@ -26,7 +40,7 @@ export default async function handler(req, res) {
 
     res.json({ valid: true });
   } catch (err) {
-    console.error("🔥 SERVER ERROR", err); // <--- ini penting!
+    console.error("🔥 SERVER ERROR", err);
     res.status(500).json({ valid: false, msg: "Server error", error: err.message });
   }
 }
