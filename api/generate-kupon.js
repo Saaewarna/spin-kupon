@@ -1,7 +1,22 @@
+import { google } from 'googleapis';
+
+const SPREADSHEET_ID = '1_fssQRK_38Ods7SW26Nmax6p5Gm1nfU0rP5JCjajlA4';
+const SHEET_KUPON = 'Sheet1';
+const SHEET_LOG = 'Sheet2';
+
 export default async function handler(req, res) {
   const { kode, user } = req.query;
 
   try {
+    if (!process.env.GOOGLE_SERVICE_ACCOUNT) {
+      throw new Error("Missing GOOGLE_SERVICE_ACCOUNT env var");
+    }
+
+    const auth = new google.auth.GoogleAuth({
+      credentials: JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT, 'base64').toString('utf-8')),
+      scopes: ['https://www.googleapis.com/auth/spreadsheets']
+    });
+
     const client = await auth.getClient();
     const sheets = google.sheets({ version: 'v4', auth: client });
 
@@ -17,6 +32,7 @@ export default async function handler(req, res) {
     if (rowIndex === -1) return res.json({ valid: false, msg: "Kupon tidak ditemukan" });
     if (dataRows[rowIndex][1] === 'TERPAKAI') return res.json({ valid: false, msg: "Kupon sudah dipakai" });
 
+    // Update status kupon ke "TERPAKAI"
     await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
       range: `${SHEET_KUPON}!B${rowIndex + 2}:C${rowIndex + 2}`,
@@ -24,10 +40,10 @@ export default async function handler(req, res) {
       resource: { values: [['TERPAKAI', user]] }
     });
 
-    // ⬇️ Simpan log ke Sheet2
+    // Logging ke Sheet2 (log spin)
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: 'Sheet2!A:D',
+      range: `${SHEET_LOG}!A:D`,
       valueInputOption: 'USER_ENTERED',
       resource: {
         values: [[user, '', kode, new Date().toLocaleString('id-ID')]]
