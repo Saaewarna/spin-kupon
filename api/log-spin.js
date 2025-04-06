@@ -6,7 +6,7 @@ export default async function handler(req, res) {
       const sheets = google.sheets({ version: 'v4', auth: client });
   
       const result = await sheets.spreadsheets.values.get({
-        const SPREADSHEET_ID = '1V7O9RTdjdoSMdppKyOsMtn60UK1o536hyID47oNajrI';
+        const SPREADSHEET_ID = '1_fssQRK_38Ods7SW26Nmax6p5Gm1nfU0rP5JCjajlA4';
         const SHEET_KUPON = 'Sheet1';
       });
   
