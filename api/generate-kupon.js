@@ -1,17 +1,3 @@
-import { google } from 'googleapis';
-
-if (!process.env.GOOGLE_SERVICE_ACCOUNT) {
-  throw new Error("Missing GOOGLE_SERVICE_ACCOUNT env var");
-}
-
-const auth = new google.auth.GoogleAuth({
-  credentials: JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT, 'base64').toString('utf-8')),
-  scopes: ['https://www.googleapis.com/auth/spreadsheets']
-});
-
-const SPREADSHEET_ID = '1_fssQRK_38Ods7SW26Nmax6p5Gm1nfU0rP5JCjajlA4';
-const SHEET_KUPON = 'Sheet1';
-
 export default async function handler(req, res) {
   const { kode, user } = req.query;
 
@@ -36,6 +22,16 @@ export default async function handler(req, res) {
       range: `${SHEET_KUPON}!B${rowIndex + 2}:C${rowIndex + 2}`,
       valueInputOption: 'USER_ENTERED',
       resource: { values: [['TERPAKAI', user]] }
+    });
+
+    // ⬇️ Simpan log ke Sheet2
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: 'Sheet2!A:D',
+      valueInputOption: 'USER_ENTERED',
+      resource: {
+        values: [[user, '', kode, new Date().toLocaleString('id-ID')]]
+      }
     });
 
     res.json({ valid: true });
