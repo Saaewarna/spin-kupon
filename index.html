@@ -425,7 +425,20 @@
   if (!userId || !kode) return alert("⚠️ Lengkapi ID dan kupon dulu!");
   if (usedCoupons.has(kode)) return alert("⛔ Kupon ini sudah dipakai!");
 
-  fetch(`/api/check-kupon?kode=${kode}&user=${userId}`)
+  function cekKupon() {
+  const kode = document.getElementById("kupon").value.trim();
+  const userId = document.getElementById("user-id").value.trim();
+
+  if (!userId || !kode) return alert("⚠️ Lengkapi ID dan kupon dulu!");
+  if (usedCoupons.has(kode)) return alert("⛔ Kupon ini sudah dipakai!");
+
+  fetch("/api/check-kupon", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ kode, user: userId })
+  })
     .then(res => res.json())
     .then(data => {
       if (!data.valid) {
