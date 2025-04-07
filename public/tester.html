@@ -472,7 +472,19 @@ function spin() {
 
   // Muter animasi
   wheel.style.transition = 'transform 6s cubic-bezier(0.33, 1, 0.68, 1)';
-  wheel.style.transform = `rotate(${finalRotation}deg)`;
+wheel.style.transform = `rotate(${finalRotation}deg)`;
+
+// 🔊 Tick sound selama spin
+const tickInterval = setInterval(() => {
+  tickSound.currentTime = 0;
+  tickSound.play();
+}, 120);
+
+// Stop tick sound setelah 6 detik
+setTimeout(() => {
+  clearInterval(tickInterval);
+}, 6000);
+
 
   setTimeout(() => {
     hadiahTerpilih = hadiahList[index]?.text || "Zonk";
