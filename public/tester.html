@@ -165,12 +165,14 @@
 
     .pointer {
   position: absolute;
-  top: -30px;
+  top: -15px; /* dari -30px atau -20px, jadi -15px buat turunin dikit */
   left: 50%;
   transform: translateX(-50%);
   z-index: 20;
-  width: 60px; /* 🔥 besarin */
+  width: 60px; /* gedein */
   height: auto;
+  animation: glowPulse 1s infinite;
+  transform-origin: bottom center; /* biar goyang realistis */
 }
 
     .spin-btn {
