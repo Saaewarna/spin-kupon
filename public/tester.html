@@ -505,9 +505,16 @@ setTimeout(() => {
   isSpinning = false;
 }, SPIN_DURATION);
 
-  .then(res => res.json())
+fetch("/api/log-spin", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
+})
+.then(res => res.json()) // ⬅️ ini baris valid
 .then(data => {
-  console.log('Respon backend:', data);
+  console.log("Respon backend:", data);
+  // ...
+});
   if (!data.success) {
   alert("❌ " + (data.msg || data.error || "Gagal menyimpan hasil."));
   return;
