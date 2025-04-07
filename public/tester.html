@@ -439,10 +439,10 @@
     let isSpinning = false;
 let hadiahTerpilih = '';
 const wheel = document.getElementById('wheel');
-const tickSound = new Audio('https://projectwarna.com/kuningtoto/ticktick.mp3');
-  tickSound.volume = 1;
-  tickSound.preload = 'auto';
-  tickSound.playbackRate = 1.2; // optional: lebih cepat
+const tickSound = new Audio('https://projectwarna.com/kuningtoto/tick.mp3');
+tickSound.volume = 1;
+tickSound.preload = 'auto';
+tickSound.loop = false; // ✅ Biar main cuma 1x
 function getRandomHadiahIndexByWeight() {
   const total = hadiahList.reduce((sum, h) => sum + h.weight, 0);
   const rand = Math.random() * total;
@@ -478,36 +478,11 @@ const SPIN_DURATION = 6200; // sama kayak timeout result
 wheel.style.transition = `transform ${SPIN_DURATION}ms cubic-bezier(0.33, 1, 0.68, 1)`;
 wheel.style.transform = `rotate(${finalRotation}deg)`;
 
-let startTime = null;
-let lastTick = 0;
-const duration = SPIN_DURATION;
-const initialInterval = 40;
-let tickLoop;
-
-function tickAnimation(timestamp) {
-  if (!startTime) startTime = timestamp;
-  const elapsed = timestamp - startTime;
-  const progress = elapsed / duration;
-  const eased = Math.pow(1 - progress, 2); // easing: makin lama makin lambat
-  const interval = initialInterval + (300 * (1 - eased)); // 40ms → ~340ms
-
-  if (elapsed - lastTick >= interval) {
-    tickSound.currentTime = 0;
-    tickSound.play().catch(() => {});
-    lastTick = elapsed;
-  }
-
-  if (elapsed < duration) {
-    tickLoop = requestAnimationFrame(tickAnimation);
-  }
-}
-
-// START TICK
-tickLoop = requestAnimationFrame(tickAnimation);
+tickSound.currentTime = 0;
+tickSound.play().catch(() => {}); // 🔥 cukup 1x aja
 
 // Stop tick pas udah selesai spin
 setTimeout(() => {
-  cancelAnimationFrame(tickLoop);
 
   hadiahTerpilih = hadiahList[index]?.text || "Zonk";
 
