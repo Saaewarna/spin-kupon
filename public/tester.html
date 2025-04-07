@@ -541,11 +541,10 @@ fetch("/api/log-spin", {
   btn.removeAttribute("disabled");
 }
 }, 300);
-    })
-    .catch(() => {
-      alert("⚠️ Gagal koneksi ke server.");
-    });
-      }
+}
+.catch(() => {
+  alert("⚠️ Gagal koneksi ke server.");
+});
 
     function showSpark() {
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.3 } });
