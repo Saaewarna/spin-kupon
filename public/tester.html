@@ -478,21 +478,18 @@ const SPIN_DURATION = 6200; // sama kayak timeout result
 wheel.style.transition = `transform ${SPIN_DURATION}ms cubic-bezier(0.33, 1, 0.68, 1)`;
 wheel.style.transform = `rotate(${finalRotation}deg)`;
 
-// 🔊 Start tick
 let startTime = null;
 let lastTick = 0;
-const duration = SPIN_DURATION; // 6200ms
-const initialInterval = 50; // awalnya cepet banget
+const duration = SPIN_DURATION;
+const initialInterval = 40;
 let tickLoop;
 
 function tickAnimation(timestamp) {
   if (!startTime) startTime = timestamp;
   const elapsed = timestamp - startTime;
-
-  // Hitung progress (0 - 1)
   const progress = elapsed / duration;
-  // Hitung interval tick berdasarkan progress (semakin lama makin lambat)
-  const interval = initialInterval + progress * 300; // dari 50ms ke 350ms
+  const eased = Math.pow(1 - progress, 2); // easing: makin lama makin lambat
+  const interval = initialInterval + (300 * (1 - eased)); // 40ms → ~340ms
 
   if (elapsed - lastTick >= interval) {
     tickSound.currentTime = 0;
@@ -505,24 +502,43 @@ function tickAnimation(timestamp) {
   }
 }
 
-// Start tick
+// START TICK
 tickLoop = requestAnimationFrame(tickAnimation);
 
 // Stop tick pas udah selesai spin
 setTimeout(() => {
   cancelAnimationFrame(tickLoop);
-}, duration);
-
-
-// ❌ Stop tick pas spin selesai
-setTimeout(() => {
-  clearInterval(tickInterval);
 
   hadiahTerpilih = hadiahList[index]?.text || "Zonk";
 
+  // Munculin pop-up hadiah
   alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
+
+  // Update live feed
   pushLiveFeed(userId, hadiahTerpilih);
 
+  // Simpan log ke backend
+  fetch("/api/log-spin", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
+  });
+
+  // Update tombol
+  spinBtn.textContent = hadiahTerpilih.toLowerCase().includes("zonk")
+    ? "Coba Lagi 🔁"
+    : "🎁 Klaim Hadiah";
+  spinBtn.disabled = false;
+  spinBtn.style.opacity = 1;
+  spinBtn.onclick = () => {
+    if (hadiahTerpilih.toLowerCase().includes("zonk")) {
+      location.reload();
+    } else {
+      window.location.href = "https://direct.lc.chat/14680344/";
+    }
+  };
+
+  isSpinning = false;
 }, SPIN_DURATION);
 
   setTimeout(() => {
