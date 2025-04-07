@@ -503,7 +503,7 @@ function initWheel() {
 
         const index = hadiahList.findIndex(h => h.text === hadiahTerpilih);
         const anglePerSegment = 360 / hadiahList.length;
-        const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9); // biar gak terlalu kaku
+        const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9);
         theWheel.animation.stopAngle = (hadiahIndex * anglePerSegment) + (anglePerSegment / 2) + variation;
       }
     }
@@ -516,27 +516,30 @@ function spin() {
   const pointer = document.querySelector('.pointer');
 
   if (theWheel && !spinBtn.disabled) {
-    // 🔒 Disable tombol saat spinning
     spinBtn.disabled = true;
     spinBtn.style.opacity = 0.6;
     spinBtn.textContent = "⏳ Memutar...";
 
+    // 🧠 Tentukan hadiah & stop angle sebelum mulai animasi!
+    const hadiahIndex = getRandomHadiahIndexByWeight();
+    hadiahTerpilih = hadiahList[hadiahIndex].text;
+
+    const anglePerSegment = 360 / hadiahList.length;
+    const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9);
+    const stopAngle = (hadiahIndex * anglePerSegment) + (anglePerSegment / 2) + variation;
+    theWheel.animation.stopAngle = stopAngle;
+
+    // 🚀 Mulai animasi wheel
     theWheel.startAnimation();
 
-    // ✨ Glow effect di canvas
     canvasEl.style.boxShadow = "0 0 30px 10px #FFD700";
     setTimeout(() => {
       canvasEl.style.boxShadow = "0 0 10px gold";
-    }, 5000); // pasang glow pas awal spin, lalu kurangin
+    }, 5000);
 
-    // 🎯 Wiggle animation
     if (pointer) {
       pointer.style.animation = 'wiggle 0.2s ease-in-out infinite';
-
-      // 🛑 Stop wiggle pas wheel selesai
-      setTimeout(() => {
-        pointer.style.animation = 'none';
-      }, 6000); // sama kayak durasi spin
+      setTimeout(() => pointer.style.animation = 'none', 6000);
     }
   }
 }
