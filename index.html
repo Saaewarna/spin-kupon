@@ -295,6 +295,15 @@
 .spin-btn.success {
   opacity: 1 !important;
 }
+.pointer {
+  animation: glowPulse 1s infinite;
+}
+
+@keyframes glowPulse {
+  0% { filter: drop-shadow(0 0 4px #fff); }
+  50% { filter: drop-shadow(0 0 10px red); }
+  100% { filter: drop-shadow(0 0 4px #fff); }
+}
 
 @keyframes glowPulse {
   0% { box-shadow: 0 0 10px 2px rgba(255, 235, 59, 0.7); }
