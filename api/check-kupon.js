@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, msg: 'Method not allowed' });
   }
 
-  const { kode, user } = req.query;
+  const { kode, userId, hadiah } = req.body;
 
   if (!kode || !userId || !hadiah) {
     return res.status(400).json({ success: false, msg: 'Missing kode, userId, or hadiah' });
@@ -30,7 +30,6 @@ export default async function handler(req, res) {
     const client = await auth.getClient();
     const sheets = google.sheets({ version: 'v4', auth: client });
 
-    // Ambil semua kupon
     const result = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: `${SHEET_KUPON}!A:C`,
@@ -45,7 +44,7 @@ export default async function handler(req, res) {
     if (dataRows[rowIndex][1] === 'TERPAKAI')
       return res.status(400).json({ success: false, msg: 'Kupon sudah dipakai' });
 
-    // Update status kupon ke "TERPAKAI"
+    // Update status kupon ke "TERPAKAI" dan simpan user
     await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
       range: `${SHEET_KUPON}!B${rowIndex + 2}:C${rowIndex + 2}`,
@@ -55,7 +54,7 @@ export default async function handler(req, res) {
       },
     });
 
-    // Tambahkan log ke Sheet2
+    // Log ke Sheet2
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
       range: `${SHEET_LOG}!A:D`,
