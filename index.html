@@ -430,7 +430,7 @@
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ kode, user: userId })
+    const { kode, user } = req.body;
   })
   .then(res => res.json())
   .then(data => {
