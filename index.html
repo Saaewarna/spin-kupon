@@ -418,13 +418,14 @@
       return hadiahList[hadiahList.length - 1].text;
     }
 
-    function cekKupon() {
+function cekKupon() {
   const kode = document.getElementById("kupon").value.trim();
   const userId = document.getElementById("user-id").value.trim();
 
   if (!userId || !kode) return alert("⚠️ Lengkapi ID dan kupon dulu!");
   if (usedCoupons.has(kode)) return alert("⛔ Kupon ini sudah dipakai!");
 
+<<<<<<< HEAD
   function cekKupon() {
   const kode = document.getElementById("kupon").value.trim();
   const userId = document.getElementById("user-id").value.trim();
@@ -432,6 +433,8 @@
   if (!userId || !kode) return alert("⚠️ Lengkapi ID dan kupon dulu!");
   if (usedCoupons.has(kode)) return alert("⛔ Kupon ini sudah dipakai!");
 
+=======
+>>>>>>> 741427f (Fix: duplikat function & fakeUsers typo)
   fetch("/api/check-kupon", {
     method: "POST",
     headers: {
@@ -442,87 +445,81 @@
     .then(res => res.json())
     .then(data => {
       if (!data.valid) {
-        alert("❌ " + data.msg); // Langsung tampilkan error
+        alert("❌ " + data.msg);
         return;
       }
 
-      // Kalau valid: tampilkan section roda + initWheel
       usedCoupons.add(kode);
       document.getElementById("user-label").textContent = userId;
       document.getElementById("user-info").style.display = "block";
       document.getElementById("wheel-section").style.display = "flex";
-
-      // baru inisialisasi roda
       initWheel();
     })
     .catch(() => alert("⚠️ Gagal cek kupon. Pastikan server jalan!"));
 }
 
-    function initWheel() {
+function initWheel() {
   hadiahTerpilih = getRandomHadiah();
   const canvasEl = document.getElementById("canvas");
   const pointerEl = document.querySelector(".pointer");
-  const tickSound = new Audio('https://projectwarna.com/assets/tick.mp3'); // ganti ini ke file mp3 kamu
-  const winSound = new Audio('https://projectwarna.com/assets/win.mp3'); // suara kemenangan
+  const tickSound = new Audio('https://projectwarna.com/assets/tick.mp3');
+  const winSound = new Audio('https://projectwarna.com/assets/win.mp3');
 
   theWheel = new Winwheel({
-  canvasId: 'canvas',
-  numSegments: hadiahList.length,
-  segments: hadiahList.map(item => ({
-    fillStyle: item.color,
-    text: item.text
-  })),
-  animation: {
-    type: 'spinToStop',
-    duration: 6,
-    spins: 10,
-    easing: 'easeInOutCirc',
-    callbackSound: tickSound,
-    soundTrigger: 'segment',
-    callbackFinished: () => {
-  const userId = document.getElementById("user-id")?.value.trim();
-  const kode = document.getElementById("kupon")?.value.trim();
+    canvasId: 'canvas',
+    numSegments: hadiahList.length,
+    segments: hadiahList.map(item => ({
+      fillStyle: item.color,
+      text: item.text
+    })),
+    animation: {
+      type: 'spinToStop',
+      duration: 6,
+      spins: 10,
+      easing: 'easeInOutCirc',
+      callbackSound: tickSound,
+      soundTrigger: 'segment',
+      callbackFinished: () => {
+        const userId = document.getElementById("user-id")?.value.trim();
+        const kode = document.getElementById("kupon")?.value.trim();
 
-  fetch("/api/log-spin", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (!data.success) {
-        alert("❌ Gagal log spin: " + data.msg);
-        return;
+        fetch("/api/log-spin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (!data.success) {
+              alert("❌ Gagal log spin: " + data.msg);
+              return;
+            }
+
+            setTimeout(() => {
+              confetti({ particleCount: 180, spread: 90, origin: { y: 0.6 } });
+              winSound.play();
+              alert("🎉 Kamu mendapatkan: " + hadiahTerpilih);
+
+              const btn = document.querySelector('.spin-btn');
+              btn.textContent = "Klaim Hadiah 🎁";
+              btn.onclick = () => window.location.href = "https://direct.lc.chat/14680344/";
+              btn.classList.add("success");
+              btn.removeAttribute("disabled");
+            }, 300);
+          })
+          .catch(() => {
+            alert("⚠️ Gagal koneksi ke server.");
+          });
+
+        // posisi berhenti
+        const index = hadiahList.findIndex(h => h.text === hadiahTerpilih);
+        const anglePerSegment = 360 / hadiahList.length;
+        const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9);
+        theWheel.animation.stopAngle = (index * anglePerSegment) + (anglePerSegment / 2) + variation;
       }
-
-      // Efek menang
-      setTimeout(() => {
-        confetti({ particleCount: 180, spread: 90, origin: { y: 0.6 } });
-        winSound.play();
-        alert("🎉 Kamu mendapatkan: " + hadiahTerpilih);
-
-        // 🔁 Ganti tombol spin jadi tombol klaim
-        const btn = document.querySelector('.spin-btn');
-        btn.textContent = "Klaim Hadiah 🎁";
-        btn.onclick = () => window.location.href = "https://direct.lc.chat/14680344/";
-        btn.classList.add("success");
-        btn.removeAttribute("disabled"); // biar bisa diklik lagi
-      }, 300);
-    })
-    .catch(() => {
-      alert("⚠️ Gagal koneksi ke server.");
-    });
-}
-  }
-});
-
-  // Tentukan posisi berhenti berdasarkan hadiah
-  const index = hadiahList.findIndex(h => h.text === hadiahTerpilih);
-const anglePerSegment = 360 / hadiahList.length;
-// Naikin variasi ke 90% dari slice untuk dramatisasi maksimal
-const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9);
-theWheel.animation.stopAngle = (index * anglePerSegment) + (anglePerSegment / 2) + variation;
-}
+    }
+  }); // <- PENUTUP Winwheel
+} // <- PENUTUP initWheel
 function spin() {
   const spinBtn = document.querySelector(".spin-btn");
   const canvasEl = document.getElementById("canvas");
