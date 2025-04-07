@@ -484,7 +484,13 @@ tickSound.play().catch(() => {}); // 🔥 cukup 1x aja
 // Stop tick pas udah selesai spin
 setTimeout(() => {
   // Hitung sudut akhir muter
-  hadiahTerpilih = hadiahList[index]?.text || "Zonk";
+  const actualRotation = finalRotation % 360;
+  const sliceAngle = 360 / hadiahList.length;
+
+  // slice ke berapa yg ditunjuk pointer
+  const landedIndex = Math.floor((360 - actualRotation + sliceAngle / 2) % 360 / sliceAngle);
+
+  hadiahTerpilih = hadiahList[landedIndex]?.text || "Zonk";
 
   alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
   pushLiveFeed(userId, hadiahTerpilih);
