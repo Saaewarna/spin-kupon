@@ -429,51 +429,7 @@
       { text: 'Zonk', weight: 94.5, color: '#aaa' }
     ];
 
-    let theWheel;
-    let hadiahTerpilih = '';
-    let usedCoupons = new Set();
-
-    function getRandomHadiahIndexByWeight() {
-  const total = hadiahList.reduce((sum, h) => sum + h.weight, 0);
-  const rand = Math.random() * total;
-  let acc = 0;
-  for (let i = 0; i < hadiahList.length; i++) {
-    acc += hadiahList[i].weight;
-    if (rand <= acc) return i;
-  }
-  return hadiahList.length - 1;
-}
-
-function cekKupon() {
-  const kode = document.getElementById("kupon").value.trim();
-  const userId = document.getElementById("user-id").value.trim();
-  console.log('Cek kupon kirim:', { kode, userId });
-
-  if (!userId || !kode) return alert("⚠️ Lengkapi ID dan kupon dulu!");
-  if (usedCoupons.has(kode)) return alert("⛔ Kupon ini sudah dipakai!");
-
-  fetch("/api/check-kupon", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ kode, user: userId })
-  })
-    .then(res => res.json())
-    .then(data => {
-        if (!data.success) {
-        alert("❌ " + (data.msg || data.error || "Gagal menyimpan hasil."));
-        return;
-        }
-
-      usedCoupons.add(kode);
-      document.getElementById("user-label").textContent = userId;
-      document.getElementById("user-info").style.display = "block";
-      document.getElementById("wheel-section").style.display = "flex";
-      initWheel();
-    })
-    .catch(() => alert("⚠️ Gagal cek kupon. Pastikan server jalan!"));
-}
-
-let isSpinning = false;
+    let isSpinning = false;
 let hadiahTerpilih = '';
 const wheel = document.getElementById('wheel');
 
