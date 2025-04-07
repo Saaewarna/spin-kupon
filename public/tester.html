@@ -149,10 +149,10 @@
     }
 
     .wheel-container {
-      position: relative;
-      width: 100%;
-      max-width: 500px;
-      aspect-ratio: 1 / 1;
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    aspect-ratio: 1 / 1;
     }
 
     #canvas {
@@ -351,12 +351,19 @@
 }
 #wheel {
   width: 100%;
+  display: block;
   transition: transform 6s cubic-bezier(0.33, 1, 0.68, 1);
   transform: rotate(0deg);
 }
-#wheel {
-  transition: transform 6s cubic-bezier(0.33, 1, 0.68, 1);
-  transform: rotate(0deg); /* default */
+
+#pointer {
+  position: absolute;
+  top: -20px; /* Sesuaikan jarak nempel */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  z-index: 10;
+  animation: wiggle 1s infinite ease-in-out;
 }
 
 #wheel.spin {
@@ -403,8 +410,8 @@
 
     <div id="wheel-section">
       <div class="wheel-container">
-        <img src="https://projectwarna.com/kuningtoto/Pointer.png" id="pointer" alt="Pointer">
         <img src="https://projectwarna.com/kuningtoto/Wheel-Of-Fortune.png" id="wheel" alt="Wheel">
+        <img src="https://projectwarna.com/kuningtoto/Pointer.png" id="pointer" alt="Pointer">
       </div>
       <button class="spin-btn" onclick="spin()">Spin Sekarang!</button>
     </div>
