@@ -510,38 +510,34 @@ fetch("/api/log-spin", {
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
 })
-.then(res => res.json()) // ⬅️ ini baris valid
+.then(res => res.json())
 .then(data => {
   console.log("Respon backend:", data);
-  // ...
-});
   if (!data.success) {
-  alert("❌ " + (data.msg || data.error || "Gagal menyimpan hasil."));
-  return;
-}
+    alert("❌ " + (data.msg || data.error || "Gagal menyimpan hasil."));
+    return;
+  }
 
-      setTimeout(() => {
-  confetti({ particleCount: 180, spread: 90, origin: { y: 0.6 } });
-  new Audio('https://projectwarna.com/kuningtoto/win.mp3').play();
-  alert("🎉 Kamu mendapatkan: " + hadiahTerpilih);
+  setTimeout(() => {
+    confetti({ particleCount: 180, spread: 90, origin: { y: 0.6 } });
+    new Audio("https://projectwarna.com/kuningtoto/win.mp3").play();
+    alert("🎉 Kamu mendapatkan: " + hadiahTerpilih);
 
-  const btn = document.querySelector('.spin-btn');
-
-  if (hadiahTerpilih.toLowerCase().includes("zonk")) {
-  btn.textContent = "Refresh Disini";
-  btn.onclick = () => location.reload(); // 🌀 RELOAD halaman
-  btn.classList.remove("success");
-  btn.classList.add("zonk-btn");
-  btn.style.opacity = "1";
-  btn.removeAttribute("disabled");
-} else {
-  btn.textContent = "Klaim Hadiah 🎁";
-  btn.onclick = () => window.location.href = "https://direct.lc.chat/14680344/";
-  btn.classList.add("success");
-  btn.removeAttribute("disabled");
-}
-}, 300);
-}
+    const btn = document.querySelector(".spin-btn");
+    if (hadiahTerpilih.toLowerCase().includes("zonk")) {
+      btn.textContent = "Refresh Disini";
+      btn.onclick = () => location.reload();
+      btn.classList.remove("success");
+      btn.classList.add("zonk-btn");
+    } else {
+      btn.textContent = "Klaim Hadiah 🎁";
+      btn.onclick = () => window.location.href = "https://direct.lc.chat/14680344/";
+      btn.classList.add("success");
+    }
+    btn.style.opacity = "1";
+    btn.removeAttribute("disabled");
+  }, 300);
+})
 .catch(() => {
   alert("⚠️ Gagal koneksi ke server.");
 });
