@@ -439,7 +439,10 @@
     let isSpinning = false;
 let hadiahTerpilih = '';
 const wheel = document.getElementById('wheel');
-
+const tickSound = new Audio('https://projectwarna.com/kuningtoto/tick.mp3');
+  tickSound.volume = 1;
+  tickSound.preload = 'auto';
+  tickSound.playbackRate = 1.2; // optional: lebih cepat
 function getRandomHadiahIndexByWeight() {
   const total = hadiahList.reduce((sum, h) => sum + h.weight, 0);
   const rand = Math.random() * total;
@@ -519,10 +522,6 @@ setTimeout(() => {
 function initWheel() {
   const canvasEl = document.getElementById("canvas");
   const pointerEl = document.querySelector(".pointer");
-  const tickSound = new Audio('https://projectwarna.com/kuningtoto/tick.mp3');
-  tickSound.volume = 1;
-  tickSound.preload = 'auto';
-  tickSound.playbackRate = 1.2; // optional: lebih cepat
   const winSound = new Audio('https://projectwarna.com/kuningtoto/win.mp3');
 
   theWheel = new Winwheel({
