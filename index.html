@@ -468,12 +468,12 @@ function initWheel() {
       callbackSound: tickSound,
       soundTrigger: 'segment',
       callbackFinished: () => {
-        const hadiahIndex = getRandomHadiahIndexByWeight();
-        hadiahTerpilih = hadiahList[hadiahIndex].text;
+        const hadiahIndex = hadiahIndexGlobal;
+        hadiahTerpilih = hadiahList[hadiahIndex]?.text || "Zonk"; // ⬅️ extra safe
 
-    const anglePerSegment = 360 / hadiahList.length;
-    const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9);
-    theWheel.animation.stopAngle = (hadiahIndex * anglePerSegment) + (anglePerSegment / 2) + variation;
+        const anglePerSegment = 360 / hadiahList.length;
+        const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9);
+        theWheel.animation.stopAngle = (hadiahIndex * anglePerSegment) + (anglePerSegment / 2) + variation;
 
   const userId = document.getElementById("user-id")?.value.trim();
   const kode = document.getElementById("kupon")?.value.trim();
@@ -531,16 +531,14 @@ function spin() {
     spinBtn.style.opacity = 0.6;
     spinBtn.textContent = "⏳ Memutar...";
 
-    // 🧠 Tentukan hadiah & stop angle sebelum mulai animasi!
-    const hadiahIndex = getRandomHadiahIndexByWeight();
-    hadiahTerpilih = hadiahList[hadiahIndex].text;
+    hadiahIndexGlobal = getRandomHadiahIndexByWeight(); // ✅ ambil & simpan
+    hadiahTerpilih = hadiahList[hadiahIndexGlobal].text;
 
     const anglePerSegment = 360 / hadiahList.length;
     const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9);
-    const stopAngle = (hadiahIndex * anglePerSegment) + (anglePerSegment / 2) + variation;
+    const stopAngle = (hadiahIndexGlobal * anglePerSegment) + (anglePerSegment / 2) + variation;
     theWheel.animation.stopAngle = stopAngle;
 
-    // 🚀 Mulai animasi wheel
     theWheel.startAnimation();
 
     canvasEl.style.boxShadow = "0 0 30px 10px #FFD700";
