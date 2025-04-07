@@ -489,13 +489,6 @@ setTimeout(() => {
   alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
   pushLiveFeed(userId, hadiahTerpilih);
 
-  // Logging & tombol next
-  fetch("/api/log-spin", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
-  });
-
   spinBtn.textContent = hadiahTerpilih.toLowerCase().includes("zonk")
     ? "Coba Lagi 🔁"
     : "🎁 Klaim Hadiah";
@@ -511,9 +504,6 @@ setTimeout(() => {
 
   isSpinning = false;
 }, SPIN_DURATION);
-
-  const userId = document.getElementById("user-id")?.value.trim();
-  const kode = document.getElementById("kupon")?.value.trim();
 
   fetch("/api/log-spin", {
     method: "POST",
@@ -636,9 +626,12 @@ function cekKupon() {
   const kode = document.getElementById("kupon").value.trim();
 
   if (!userId || !kode) {
-    alert("⚠️ Lengkapi ID dan kode kupon dulu!");
-    return;
-  }
+  alert("⚠️ Lengkapi ID dan kode kupon dulu!");
+  isSpinning = false;
+  spinBtn.disabled = false;
+  spinBtn.textContent = "Spin Sekarang!";
+  return;
+}
 
   fetch("/api/check-kupon", {
     method: "POST",
