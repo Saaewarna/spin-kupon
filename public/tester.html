@@ -439,10 +439,10 @@
     let isSpinning = false;
 let hadiahTerpilih = '';
 const wheel = document.getElementById('wheel');
-const tickSound = new Audio('https://projectwarna.com/kuningtoto/tick.mp3');
-tickSound.volume = 1;
-tickSound.preload = 'auto';
-tickSound.loop = false; // ✅ Biar main cuma 1x
+  const tickSound = new Audio('https://projectwarna.com/kuningtoto/tick.mp3');
+  tickSound.volume = 1;
+  tickSound.preload = 'auto';
+  tickSound.playbackRate = 1.2; // optional: lebih cepat
 function getRandomHadiahIndexByWeight() {
   const total = hadiahList.reduce((sum, h) => sum + h.weight, 0);
   const rand = Math.random() * total;
@@ -472,51 +472,52 @@ function spin() {
   const offset = (Math.random() - 0.5) * sliceAngle * 0.8;
   const stopAngle = index * sliceAngle + sliceAngle / 2 + offset;
   const finalRotation = baseRotation + stopAngle;
-const SPIN_DURATION = 6200; // sama kayak timeout result
 
-// Start muter animasi
-wheel.style.transition = `transform ${SPIN_DURATION}ms cubic-bezier(0.33, 1, 0.68, 1)`;
+  // Muter animasi
+  wheel.style.transition = 'transform 6s cubic-bezier(0.33, 1, 0.68, 1)';
 wheel.style.transform = `rotate(${finalRotation}deg)`;
 
-tickSound.currentTime = 0;
-tickSound.play().catch(() => {}); // 🔥 cukup 1x aja
-
-// Stop tick pas udah selesai spin
-setTimeout(() => {
-  // Hitung sudut akhir muter
-  const actualRotation = finalRotation % 360;
-  const sliceAngle = 360 / hadiahList.length;
-
-  // slice ke berapa yg ditunjuk pointer
-  const landedIndex = Math.floor((360 - actualRotation + sliceAngle / 2) % 360 / sliceAngle);
-
-  hadiahTerpilih = hadiahList[landedIndex]?.text || "Zonk";
-
-  alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
-  pushLiveFeed(userId, hadiahTerpilih);
-
-  // Logging & tombol next
-  fetch("/api/log-spin", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
+// 🔊 Tick sound selama spin
+const tickInterval = setInterval(() => {
+  tickSound.currentTime = 0;
+  tickSound.play().catch((err) => {
+    console.warn("Tick sound blocked:", err);
   });
+}, 120);
 
-  spinBtn.textContent = hadiahTerpilih.toLowerCase().includes("zonk")
-    ? "Coba Lagi 🔁"
-    : "🎁 Klaim Hadiah";
-  spinBtn.disabled = false;
-  spinBtn.style.opacity = 1;
-  spinBtn.onclick = () => {
-    if (hadiahTerpilih.toLowerCase().includes("zonk")) {
-      location.reload();
-    } else {
-      window.location.href = "https://direct.lc.chat/14680344/";
-    }
-  };
+// Stop tick sound setelah 6 detik
+setTimeout(() => {
+  clearInterval(tickInterval);
+}, 6000);
 
-  isSpinning = false;
-}, SPIN_DURATION);
+  setTimeout(() => {
+    hadiahTerpilih = hadiahList[index]?.text || "Zonk";
+
+    alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
+    pushLiveFeed(userId, hadiahTerpilih);
+
+    fetch("/api/log-spin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
+    });
+
+    spinBtn.textContent = hadiahTerpilih.toLowerCase().includes("zonk")
+      ? "Coba Lagi 🔁"
+      : "🎁 Klaim Hadiah";
+    spinBtn.disabled = false;
+    spinBtn.style.opacity = 1;
+    spinBtn.onclick = () => {
+      if (hadiahTerpilih.toLowerCase().includes("zonk")) {
+        location.reload();
+      } else {
+        window.location.href = "https://direct.lc.chat/14680344/";
+      }
+    };
+
+    isSpinning = false;
+  }, 6200);
+}
 
 function initWheel() {
   const canvasEl = document.getElementById("canvas");
@@ -645,7 +646,7 @@ function maskUser(userId) {
 }
 
   function getMixedUser() {
-    return Math.random() < 0.7 ? fakeUserList[Math.floor(Math.random() * fakeUserList.length)] : randomUserId();
+    return Math.random() < 0.7 ? fakeUsers[Math.floor(Math.random() * fakeUsers.length)] : randomUserId();
   }
 
   function pushFakeLiveFeed() {
