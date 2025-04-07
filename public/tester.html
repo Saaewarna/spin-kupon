@@ -472,8 +472,7 @@ function spin() {
   const offset = (Math.random() - 0.5) * sliceAngle * 0.8;
   const stopAngle = index * sliceAngle + sliceAngle / 2 + offset;
   const finalRotation = baseRotation + stopAngle;
-
-  const SPIN_DURATION = 6200; // sama kayak timeout result
+const SPIN_DURATION = 6200; // sama kayak timeout result
 
 // Start muter animasi
 wheel.style.transition = `transform ${SPIN_DURATION}ms cubic-bezier(0.33, 1, 0.68, 1)`;
@@ -489,9 +488,14 @@ const tickInterval = setInterval(() => {
 setTimeout(() => {
   clearInterval(tickInterval);
 
-  // Lanjut logic hasil
   hadiahTerpilih = hadiahList[index]?.text || "Zonk";
-  ...
+
+  // ✅ Baru tampilkan spin-log
+  document.getElementById("spin-log").style.display = "block";
+
+  alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
+  pushLiveFeed(userId, hadiahTerpilih);
+  
 }, SPIN_DURATION);
 
   setTimeout(() => {
@@ -650,7 +654,7 @@ function maskUser(userId) {
 }
 
   function getMixedUser() {
-    return Math.random() < 0.7 ? fakeUsers[Math.floor(Math.random() * fakeUsers.length)] : randomUserId();
+    return Math.random() < 0.7 ? fakeUserList[Math.floor(Math.random() * fakeUserList.length)] : randomUserId();
   }
 
   function pushFakeLiveFeed() {
