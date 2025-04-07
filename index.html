@@ -486,16 +486,25 @@ function initWheel() {
       }
 
       setTimeout(() => {
-        confetti({ particleCount: 180, spread: 90, origin: { y: 0.6 } });
-        new Audio('https://projectwarna.com/assets/win.mp3').play();
-        alert("🎉 Kamu mendapatkan: " + hadiahTerpilih);
+  confetti({ particleCount: 180, spread: 90, origin: { y: 0.6 } });
+  new Audio('https://projectwarna.com/assets/win.mp3').play();
+  alert("🎉 Kamu mendapatkan: " + hadiahTerpilih);
 
-        const btn = document.querySelector('.spin-btn');
-        btn.textContent = "Klaim Hadiah 🎁";
-        btn.onclick = () => window.location.href = "https://direct.lc.chat/14680344/";
-        btn.classList.add("success");
-        btn.removeAttribute("disabled");
-      }, 300);
+  const btn = document.querySelector('.spin-btn');
+
+  if (hadiahTerpilih.toLowerCase().includes('zonk')) {
+    btn.textContent = "😵 Kamu Zonk";
+    btn.disabled = true;
+    btn.style.backgroundColor = "#999";
+    btn.style.cursor = "not-allowed";
+    btn.classList.remove("success");
+  } else {
+    btn.textContent = "Klaim Hadiah 🎁";
+    btn.onclick = () => window.location.href = "https://direct.lc.chat/14680344/";
+    btn.classList.add("success");
+    btn.removeAttribute("disabled");
+  }
+}, 300);
     })
     .catch(() => {
       alert("⚠️ Gagal koneksi ke server.");
