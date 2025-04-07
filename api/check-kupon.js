@@ -2,7 +2,6 @@ import { google } from 'googleapis';
 
 const SPREADSHEET_ID = '1_fssQRK_38Ods7SW26Nmax6p5Gm1nfU0rP5JCjajlA4';
 const SHEET_KUPON = 'Sheet1';
-const SHEET_LOG = 'Sheet2';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -40,31 +39,22 @@ export default async function handler(req, res) {
     const rowIndex = dataRows.findIndex((row) => row[0] === kode);
 
     if (rowIndex === -1)
-      return res.status(400).json({ success: false, msg: 'Kupon tidak ditemukan' });
-    if (dataRows[rowIndex][1] === 'TERPAKAI')
-      return res.status(400).json({ success: false, msg: 'Kupon sudah dipakai' });
+      return res.status(400).json({ success: false, msg: 'Kupon tidak ditemukan', valid: false });
 
-    // Update status kupon ke "TERPAKAI" dan simpan user
+    if (dataRows[rowIndex][1] === 'TERPAKAI')
+      return res.status(400).json({ success: false, msg: 'Kupon sudah dipakai', valid: false });
+
+    // Update status kupon
     await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
       range: `${SHEET_KUPON}!B${rowIndex + 2}:C${rowIndex + 2}`,
       valueInputOption: 'USER_ENTERED',
       resource: {
-        values: [['TERPAKAI', userId]],
+        values: [['TERPAKAI', user]],
       },
     });
 
-    // Log ke Sheet2
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${SHEET_LOG}!A:D`,
-      valueInputOption: 'USER_ENTERED',
-      resource: {
-        values: [[userId, hadiah, kode, new Date().toLocaleString('id-ID')]],
-      },
-    });
-
-    res.json({ success: true });
+    return res.status(200).json({ success: true, valid: true });
   } catch (err) {
     console.error('🔥 SERVER ERROR', err);
     res.status(500).json({ success: false, msg: 'Server error', error: err.message });
