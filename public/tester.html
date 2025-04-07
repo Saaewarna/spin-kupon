@@ -345,9 +345,9 @@
 }
 @keyframes wiggle {
   0%, 100% { transform: translateX(-50%) rotate(0deg); }
-  25% { transform: translateX(-50%) rotate(4deg); }
-  50% { transform: translateX(-50%) rotate(-4deg); }
-  75% { transform: translateX(-50%) rotate(2deg); }
+  25% { transform: translateX(-50%) rotate(5deg); }
+  50% { transform: translateX(-50%) rotate(-5deg); }
+  75% { transform: translateX(-50%) rotate(3deg); }
 }
 #wheel {
   width: 100%;
@@ -358,12 +358,12 @@
 
 #pointer {
   position: absolute;
-  top: -20px; /* Sesuaikan jarak nempel */
+  top: -30px;
   left: 50%;
   transform: translateX(-50%);
-  width: 40px;
-  z-index: 10;
-  animation: wiggle 1s infinite ease-in-out;
+  width: 60px; /* 🔥 lebih besar */
+  z-index: 20;
+  transition: transform 0.2s ease;
 }
 
 #wheel.spin {
@@ -374,6 +374,9 @@
   max-width: 500px;
   transition: transform 6s cubic-bezier(0.33, 1, 0.68, 1);
   transform: rotate(0deg);
+}
+.goyang {
+  animation: wiggle 0.3s infinite ease-in-out;
 }
   </style>
 </head>
@@ -470,39 +473,43 @@ const baseRotation = 360 * 10;
 const offset = (Math.random() - 0.5) * sliceAngle * 0.8;
 const stopAngle = index * sliceAngle + (sliceAngle / 2) + offset;
 const finalRotation = baseRotation + stopAngle + 270; // pointer fix
-
+pointer.classList.add("goyang");
 wheel.style.transform = `rotate(${finalRotation}deg)`;
 
 
   // ✨ Muter wheel PNG
-  wheel.style.transform = `rotate(${finalRotation}deg)`;
+  const pointer = document.getElementById("pointer");
+  pointer.classList.add("goyang");
 
   setTimeout(() => {
-    alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
-    pushLiveFeed(userId, hadiahTerpilih);
+  alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
+  pushLiveFeed(userId, hadiahTerpilih);
 
-    fetch("/api/log-spin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
-    });
+  fetch("/api/log-spin", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
+  });
 
     spinBtn.textContent = hadiahTerpilih.toLowerCase().includes("zonk")
-      ? "Coba Lagi 🔁"
-      : "🎁 Klaim Hadiah";
-    spinBtn.disabled = false;
-    spinBtn.style.opacity = 1;
-    spinBtn.onclick = () => {
-      if (hadiahTerpilih.toLowerCase().includes("zonk")) {
-        location.reload();
-      } else {
-        window.location.href = "https://direct.lc.chat/14680344/";
-      }
-    };
+    ? "Coba Lagi 🔁"
+    : "🎁 Klaim Hadiah";
+  spinBtn.disabled = false;
+  spinBtn.style.opacity = 1;
 
-    isSpinning = false;
-  }, 6200);
-}
+  // matiin animasi goyang pointer
+  pointer.classList.remove("goyang");
+
+  spinBtn.onclick = () => {
+    if (hadiahTerpilih.toLowerCase().includes("zonk")) {
+      location.reload();
+    } else {
+      window.location.href = "https://direct.lc.chat/14680344/";
+    }
+  };
+
+  isSpinning = false;
+}, 6200);
 
 
 function initWheel() {
