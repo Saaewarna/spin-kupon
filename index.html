@@ -418,7 +418,7 @@
       return hadiahList[hadiahList.length - 1].text;
     }
 
-  function cekKupon() {
+    function cekKupon() {
   const kode = document.getElementById("kupon").value.trim();
   const userId = document.getElementById("user-id").value.trim();
 
@@ -427,25 +427,23 @@
 
   fetch("/api/check-kupon", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    const { kode, user } = req.body;
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ kode, user: userId })
   })
-  .then(res => res.json())
-  .then(data => {
-    if (!data.valid) {
-      alert("❌ " + data.msg);
-      return;
-    }
+    .then(res => res.json())
+    .then(data => {
+      if (!data.valid) {
+        alert("❌ " + data.msg);
+        return;
+      }
 
-    usedCoupons.add(kode);
-    document.getElementById("user-label").textContent = userId;
-    document.getElementById("user-info").style.display = "block";
-    document.getElementById("wheel-section").style.display = "flex";
-    initWheel();
-  })
-  .catch(() => alert("⚠️ Gagal cek kupon. Pastikan server jalan!"));
+      usedCoupons.add(kode);
+      document.getElementById("user-label").textContent = userId;
+      document.getElementById("user-info").style.display = "block";
+      document.getElementById("wheel-section").style.display = "flex";
+      initWheel(); // <-- ini panggil function yg ada DI LUAR
+    })
+    .catch(() => alert("⚠️ Gagal cek kupon. Pastikan server jalan!"));
 }
 
 function initWheel() {
@@ -501,15 +499,15 @@ function initWheel() {
             alert("⚠️ Gagal koneksi ke server.");
           });
 
-        // posisi berhenti
         const index = hadiahList.findIndex(h => h.text === hadiahTerpilih);
         const anglePerSegment = 360 / hadiahList.length;
         const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9);
         theWheel.animation.stopAngle = (index * anglePerSegment) + (anglePerSegment / 2) + variation;
       }
     }
-  }); // <- PENUTUP Winwheel
-} // <- PENUTUP initWheel
+  });
+}
+
 function spin() {
   const spinBtn = document.querySelector(".spin-btn");
   const canvasEl = document.getElementById("canvas");
