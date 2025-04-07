@@ -453,6 +453,7 @@ function getRandomHadiahIndexByWeight() {
 
 function spin() {
   const spinBtn = document.querySelector(".spin-btn");
+  const wheel = document.getElementById("wheel");
   const userId = document.getElementById("user-id").value.trim();
   const kode = document.getElementById("kupon").value.trim();
 
@@ -464,20 +465,22 @@ function spin() {
   spinBtn.style.opacity = 0.6;
 
   const sliceAngle = 360 / hadiahList.length;
-  const index = getRandomHadiahIndexByWeight(); // 🔥 ini penting!
   const baseRotation = 360 * 10;
   const offset = (Math.random() - 0.5) * sliceAngle * 0.8;
+  const index = getRandomHadiahIndexByWeight();
   const stopAngle = index * sliceAngle + sliceAngle / 2 + offset;
-  const finalRotation = baseRotation + stopAngle;
 
-  // Muter animasi
+  const rotationAngle = 270; // supaya pointer di jam 12
+  const finalRotation = baseRotation + stopAngle + rotationAngle;
+
   wheel.style.transition = 'transform 6s cubic-bezier(0.33, 1, 0.68, 1)';
   wheel.style.transform = `rotate(${finalRotation}deg)`;
 
   setTimeout(() => {
+    // Normalisasi ke 0-360
     const landedDeg = (finalRotation % 360 + 360) % 360;
-    const landedIndex = Math.floor((360 - landedDeg + sliceAngle / 2) % 360 / sliceAngle);
-    hadiahTerpilih = hadiahList[landedIndex]?.text || "Zonk";
+    const landedIndex = Math.floor(((360 - landedDeg + rotationAngle + sliceAngle / 2) % 360) / sliceAngle);
+    hadiahTerpilih = hadiahList[landedIndex].text;
 
     alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
     pushLiveFeed(userId, hadiahTerpilih);
