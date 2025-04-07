@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     const sheets = google.sheets({ version: 'v4', auth: client });
 
     // ✅ Logging data
-    const timestamp = new Date().toLocaleString('id-ID');
+    const timestamp = new Date().toISOString();
     const values = [[userId, hadiah, kode, timestamp]];
 
     await sheets.spreadsheets.values.append({
