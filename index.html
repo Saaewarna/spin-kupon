@@ -470,24 +470,17 @@
   const userId = document.getElementById("user-id")?.value.trim();
   const kode = document.getElementById("kupon")?.value.trim();
 
-  fetch("/api/check-kupon", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ kode, user: userId })
-})
-  .then(res => res.json())
-  .then(data => {
-    if (!data.valid) {
-      alert("❌ Gagal log spin: " + data.msg);
-      return;
-    }
-
-    // lanjutkan logic kalau sukses
-    console.log("✅ Spin berhasil dicatat!");
+  fetch("/api/log-spin", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
   })
-  .catch(err => {
-    alert("❌ Gagal terhubung ke server: " + err.message);
-  });
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        alert("❌ Gagal log spin: " + data.msg);
+        return;
+      }
 
       // Efek menang
       setTimeout(() => {
