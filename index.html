@@ -418,14 +418,6 @@
       return hadiahList[hadiahList.length - 1].text;
     }
 
-function cekKupon() {
-  const kode = document.getElementById("kupon").value.trim();
-  const userId = document.getElementById("user-id").value.trim();
-
-  if (!userId || !kode) return alert("⚠️ Lengkapi ID dan kupon dulu!");
-  if (usedCoupons.has(kode)) return alert("⛔ Kupon ini sudah dipakai!");
-
-<<<<<<< HEAD
   function cekKupon() {
   const kode = document.getElementById("kupon").value.trim();
   const userId = document.getElementById("user-id").value.trim();
@@ -433,8 +425,6 @@ function cekKupon() {
   if (!userId || !kode) return alert("⚠️ Lengkapi ID dan kupon dulu!");
   if (usedCoupons.has(kode)) return alert("⛔ Kupon ini sudah dipakai!");
 
-=======
->>>>>>> 741427f (Fix: duplikat function & fakeUsers typo)
   fetch("/api/check-kupon", {
     method: "POST",
     headers: {
@@ -442,20 +432,20 @@ function cekKupon() {
     },
     body: JSON.stringify({ kode, user: userId })
   })
-    .then(res => res.json())
-    .then(data => {
-      if (!data.valid) {
-        alert("❌ " + data.msg);
-        return;
-      }
+  .then(res => res.json())
+  .then(data => {
+    if (!data.valid) {
+      alert("❌ " + data.msg);
+      return;
+    }
 
-      usedCoupons.add(kode);
-      document.getElementById("user-label").textContent = userId;
-      document.getElementById("user-info").style.display = "block";
-      document.getElementById("wheel-section").style.display = "flex";
-      initWheel();
-    })
-    .catch(() => alert("⚠️ Gagal cek kupon. Pastikan server jalan!"));
+    usedCoupons.add(kode);
+    document.getElementById("user-label").textContent = userId;
+    document.getElementById("user-info").style.display = "block";
+    document.getElementById("wheel-section").style.display = "flex";
+    initWheel();
+  })
+  .catch(() => alert("⚠️ Gagal cek kupon. Pastikan server jalan!"));
 }
 
 function initWheel() {
