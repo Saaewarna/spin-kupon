@@ -165,16 +165,13 @@
 
     .pointer {
   position: absolute;
-  top: -20px;
+  top: -30px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 20;
-  width: 40px;
+  width: 60px; /* 🔥 besarin */
   height: auto;
-  animation: wiggle 1s infinite ease-in-out;
 }
-
-
 
     .spin-btn {
       margin-top: 20px;
@@ -375,9 +372,6 @@
   transition: transform 6s cubic-bezier(0.33, 1, 0.68, 1);
   transform: rotate(0deg);
 }
-.goyang {
-  animation: wiggle 0.3s infinite ease-in-out;
-}
   </style>
 </head>
 <body>
@@ -473,43 +467,36 @@ const baseRotation = 360 * 10;
 const offset = (Math.random() - 0.5) * sliceAngle * 0.8;
 const stopAngle = index * sliceAngle + (sliceAngle / 2) + offset;
 const finalRotation = baseRotation + stopAngle + 270; // pointer fix
-pointer.classList.add("goyang");
 wheel.style.transform = `rotate(${finalRotation}deg)`;
-
-
-  // ✨ Muter wheel PNG
-  const pointer = document.getElementById("pointer");
-  pointer.classList.add("goyang");
-
+const pointer = document.getElementById("pointer");
+pointer.classList.add("goyang");
   setTimeout(() => {
-  alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
-  pushLiveFeed(userId, hadiahTerpilih);
+    alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
+    pushLiveFeed(userId, hadiahTerpilih);
 
-  fetch("/api/log-spin", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
-  });
+    fetch("/api/log-spin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
+    });
 
     spinBtn.textContent = hadiahTerpilih.toLowerCase().includes("zonk")
-    ? "Coba Lagi 🔁"
-    : "🎁 Klaim Hadiah";
-  spinBtn.disabled = false;
-  spinBtn.style.opacity = 1;
+      ? "Coba Lagi 🔁"
+      : "🎁 Klaim Hadiah";
+    spinBtn.disabled = false;
+    spinBtn.style.opacity = 1;
+    spinBtn.onclick = () => {
+      if (hadiahTerpilih.toLowerCase().includes("zonk")) {
+        location.reload();
+      } else {
+        window.location.href = "https://direct.lc.chat/14680344/";
+      }
+    };
 
-  // matiin animasi goyang pointer
-  pointer.classList.remove("goyang");
-
-  spinBtn.onclick = () => {
-    if (hadiahTerpilih.toLowerCase().includes("zonk")) {
-      location.reload();
-    } else {
-      window.location.href = "https://direct.lc.chat/14680344/";
-    }
-  };
-
-  isSpinning = false;
-}, 6200);
+    isSpinning = false;
+    pointer.classList.remove("goyang");
+  }, 6200);
+}
 
 
 function initWheel() {
