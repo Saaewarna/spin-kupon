@@ -493,10 +493,11 @@ function initWheel() {
   const btn = document.querySelector('.spin-btn');
 
   if (hadiahTerpilih.toLowerCase().includes('zonk')) {
-    btn.textContent = "😵 Kamu Zonk";
+    btn.textContent = "Refresh Disini";
     btn.onclick = () => location.reload(); // 🌀 RELOAD halaman
     btn.classList.remove("success");
     btn.classList.add("zonk-btn");
+    btn.style.opacity = "1";
     btn.removeAttribute("disabled");
   } else {
     btn.textContent = "Klaim Hadiah 🎁";
