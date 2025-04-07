@@ -494,10 +494,10 @@ function initWheel() {
 
   if (hadiahTerpilih.toLowerCase().includes('zonk')) {
     btn.textContent = "😵 Kamu Zonk";
-    btn.disabled = true;
-    btn.style.backgroundColor = "#999";
-    btn.style.cursor = "not-allowed";
+    btn.onclick = () => location.reload(); // 🌀 RELOAD halaman
     btn.classList.remove("success");
+    btn.classList.add("zonk-btn");
+    btn.removeAttribute("disabled");
   } else {
     btn.textContent = "Klaim Hadiah 🎁";
     btn.onclick = () => window.location.href = "https://direct.lc.chat/14680344/";
