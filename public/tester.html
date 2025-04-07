@@ -505,12 +505,6 @@ setTimeout(() => {
   isSpinning = false;
 }, SPIN_DURATION);
 
-fetch("/api/log-spin", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
-})
-
   .then(res => res.json())
 .then(data => {
   console.log('Respon backend:', data);
