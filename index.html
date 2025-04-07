@@ -470,6 +470,10 @@ function initWheel() {
         const hadiahIndex = getRandomHadiahIndexByWeight();
         hadiahTerpilih = hadiahList[hadiahIndex].text;
 
+    const anglePerSegment = 360 / hadiahList.length;
+    const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9);
+    theWheel.animation.stopAngle = (hadiahIndex * anglePerSegment) + (anglePerSegment / 2) + variation;
+
   const userId = document.getElementById("user-id")?.value.trim();
   const kode = document.getElementById("kupon")?.value.trim();
 
@@ -492,29 +496,24 @@ function initWheel() {
 
   const btn = document.querySelector('.spin-btn');
 
-  if (hadiahTerpilih.toLowerCase().includes('zonk')) {
-    btn.textContent = "Refresh Disini";
-    btn.onclick = () => location.reload(); // 🌀 RELOAD halaman
-    btn.classList.remove("success");
-    btn.classList.add("zonk-btn");
-    btn.style.opacity = "1";
-    btn.removeAttribute("disabled");
-  } else {
-    btn.textContent = "Klaim Hadiah 🎁";
-    btn.onclick = () => window.location.href = "https://direct.lc.chat/14680344/";
-    btn.classList.add("success");
-    btn.removeAttribute("disabled");
-  }
+if (hadiahTerpilih.toLowerCase().includes('zonk')) {
+  btn.textContent = "Refresh Disini";
+  btn.onclick = () => location.reload(); // 🌀 RELOAD halaman
+  btn.classList.remove("success");
+  btn.classList.add("zonk-btn");
+  btn.style.opacity = "1";
+  btn.removeAttribute("disabled");
+} else {
+  btn.textContent = "Klaim Hadiah 🎁";
+  btn.onclick = () => window.location.href = "https://direct.lc.chat/14680344/";
+  btn.classList.add("success");
+  btn.removeAttribute("disabled");
+}
 }, 300);
     })
     .catch(() => {
       alert("⚠️ Gagal koneksi ke server.");
     });
-
-        const index = hadiahList.findIndex(h => h.text === hadiahTerpilih);
-        const anglePerSegment = 360 / hadiahList.length;
-        const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9);
-        theWheel.animation.stopAngle = (hadiahIndex * anglePerSegment) + (anglePerSegment / 2) + variation;
       }
     }
   });
