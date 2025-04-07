@@ -477,36 +477,39 @@ function spin() {
   wheel.style.transform = `rotate(${finalRotation}deg)`;
 
   setTimeout(() => {
-    // Normalisasi ke 0-360
-    const landedDeg = (finalRotation % 360 + 360) % 360;
-    const landedIndex = Math.floor(((360 - landedDeg + rotationAngle + sliceAngle / 2) % 360) / sliceAngle);
-    hadiahTerpilih = hadiahList[landedIndex].text;
+  const rotationAngle = 270; // sesuai posisi pointer jam 12
+  const landedDeg = (finalRotation % 360 + 360) % 360;
 
-    alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
-    pushLiveFeed(userId, hadiahTerpilih);
+  // Koreksi hitung slice yang kena pointer
+  const correctedDeg = (landedDeg - rotationAngle + 360) % 360;
+  const landedIndex = Math.floor((correctedDeg + sliceAngle / 2) / sliceAngle) % hadiahList.length;
 
-    fetch("/api/log-spin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
-    });
+  hadiahTerpilih = hadiahList[landedIndex].text;
 
-    spinBtn.textContent = hadiahTerpilih.toLowerCase().includes("zonk")
-      ? "Coba Lagi 🔁"
-      : "🎁 Klaim Hadiah";
-    spinBtn.disabled = false;
-    spinBtn.style.opacity = 1;
-    spinBtn.onclick = () => {
-      if (hadiahTerpilih.toLowerCase().includes("zonk")) {
-        location.reload();
-      } else {
-        window.location.href = "https://direct.lc.chat/14680344/";
-      }
-    };
+  alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
+  pushLiveFeed(userId, hadiahTerpilih);
 
-    isSpinning = false;
-  }, 6200);
-}
+  fetch("/api/log-spin", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
+  });
+
+  spinBtn.textContent = hadiahTerpilih.toLowerCase().includes("zonk")
+    ? "Coba Lagi 🔁"
+    : "🎁 Klaim Hadiah";
+  spinBtn.disabled = false;
+  spinBtn.style.opacity = 1;
+  spinBtn.onclick = () => {
+    if (hadiahTerpilih.toLowerCase().includes("zonk")) {
+      location.reload();
+    } else {
+      window.location.href = "https://direct.lc.chat/14680344/";
+    }
+  };
+
+  isSpinning = false;
+}, 6200);
 
 function initWheel() {
   const canvasEl = document.getElementById("canvas");
