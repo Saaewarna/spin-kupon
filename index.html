@@ -486,10 +486,10 @@ function initWheel() {
   .then(res => res.json())
 .then(data => {
   console.log('Respon backend:', data);
-  if (!data.valid) {
-    alert("❌ " + data.msg);
-    return;
-  }
+  if (!data.success) {
+  alert("❌ " + (data.msg || data.error || "Gagal menyimpan hasil."));
+  return;
+}
 
       setTimeout(() => {
   confetti({ particleCount: 180, spread: 90, origin: { y: 0.6 } });
@@ -498,7 +498,7 @@ function initWheel() {
 
   const btn = document.querySelector('.spin-btn');
 
-if (hadiahTerpilih.toLowerCase().includes('zonk')) {
+  if (hadiahTerpilih.toLowerCase().includes("zonk")) {
   btn.textContent = "Refresh Disini";
   btn.onclick = () => location.reload(); // 🌀 RELOAD halaman
   btn.classList.remove("success");
