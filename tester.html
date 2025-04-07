@@ -365,53 +365,58 @@ gsap.fromTo(".pointer",
     }
 
     function initWheel() {
-      hadiahTerpilih = getRandomHadiah();
-      theWheel = new Winwheel({
-  canvasId: 'canvas',
-  numSegments: hadiahList.length,
-  segments: hadiahList.map(item => ({
-    fillStyle: item.color,
-    text: item.text
-  })),
-  rotationAngle: 270, // 🔥 Mulai dari jam 12
-  animation: {
-    type: 'spinToStop',
-    duration: 6,
-    spins: 10,
-    easing: 'easeInOutCirc',
-    callbackSound: tickSound,
-    soundTrigger: 'segment',
-    callbackFinished: () => {
-      // callback logic...
-    }
-  }
-});
-    highlightWinnerSegment();
-    showSpark();
+  const hadiahIndex = getRandomHadiahIndexByWeight();
+  hadiahTerpilih = hadiahList[hadiahIndex].text;
 
-    const userId = document.getElementById("user-id").value.trim();
-    const kode = document.getElementById("kupon").value.trim();
+  const anglePerSegment = 360 / hadiahList.length;
+  const stopAngle = 270 - (hadiahIndex * anglePerSegment) - (anglePerSegment / 2); // 🔥 match pointer jam 12
 
-    fetch("http://127.0.0.1:5500/log-spin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
+  theWheel = new Winwheel({
+    canvasId: 'canvas',
+    numSegments: hadiahList.length,
+    segments: hadiahList.map(item => ({
+      fillStyle: item.color,
+      text: item.text
+    })),
+    rotationAngle: 270, // pointer di atas (jam 12)
+    animation: {
+      type: 'spinToStop',
+      duration: 6,
+      spins: 10,
+      easing: 'easeInOutCirc',
+      stopAngle, // ini yang bikin pas
+      callbackSound: tickSound,
+      soundTrigger: 'segment',
+      callbackFinished: () => {
+        highlightWinnerSegment();
+        showSpark();
         alert("🎉 Kamu mendapatkan: " + hadiahTerpilih);
-        const logItem = document.createElement("li");
-        logItem.textContent = `🥇 ${userId} → 🏱 ${hadiahTerpilih}`;
-        document.getElementById("log-list").prepend(logItem);
-        document.getElementById("spin-log").style.display = "block";
-        pushLiveFeed(userId, hadiahTerpilih);
-      } else {
-        alert("❌ Gagal log spin: " + data.msg);
+
+        const userId = document.getElementById("user-id").value.trim();
+        const kode = document.getElementById("kupon").value.trim();
+
+        fetch("http://127.0.0.1:5500/log-spin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            const logItem = document.createElement("li");
+            logItem.textContent = `🥇 ${userId} → 🏱 ${hadiahTerpilih}`;
+            document.getElementById("log-list").prepend(logItem);
+            document.getElementById("spin-log").style.display = "block";
+            pushLiveFeed(userId, hadiahTerpilih);
+          } else {
+            alert("❌ Gagal log spin: " + data.msg);
+          }
+        });
       }
-    });
-  }
+    }
+  });
 }
+
 
       });
       const index = hadiahList.findIndex(h => h.text === hadiahTerpilih);
