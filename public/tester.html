@@ -467,17 +467,19 @@ function spin() {
   spinBtn.style.opacity = 0.6;
 
   const sliceAngle = 360 / hadiahList.length;
-  const index = getRandomHadiahIndexByWeight(); // 🔥 ini penting!
-  const baseRotation = 360 * 10;
-  const offset = (Math.random() - 0.5) * sliceAngle * 0.8;
-  const stopAngle = index * sliceAngle + sliceAngle / 2 + offset;
-  const finalRotation = baseRotation + stopAngle;
-const SPIN_DURATION = 6200; // sama kayak timeout result
+const index = getRandomHadiahIndexByWeight();
+const baseRotation = 360 * 10;
+const stopAngle = index * sliceAngle + sliceAngle / 2;
+const finalRotation = baseRotation + stopAngle;
 
-// Start muter animasi
 wheel.style.transition = `transform ${SPIN_DURATION}ms cubic-bezier(0.33, 1, 0.68, 1)`;
 wheel.style.transform = `rotate(${finalRotation}deg)`;
 
+setTimeout(() => {
+  const actualDeg = finalRotation % 360;
+  const landedIndex = Math.floor((actualDeg % 360) / sliceAngle);
+  hadiahTerpilih = hadiahList[landedIndex]?.text || "Zonk";
+  console.log({ actualDeg, landedIndex, hadiahTerpilih });
 tickSound.currentTime = 0;
 tickSound.play().catch(() => {}); // 🔥 cukup 1x aja
 
@@ -504,6 +506,7 @@ setTimeout(() => {
 
   isSpinning = false;
 }, SPIN_DURATION);
+const SPIN_DURATION = 6200; // sama kayak timeout result
 
   function cekKupon() {
     spinBtn.disabled = false;
