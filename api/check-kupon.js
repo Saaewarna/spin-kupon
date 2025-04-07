@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, msg: 'Method not allowed' });
   }
 
-  const { kode, userId, hadiah } = req.body;
+  const { kode, user } = req.query;
 
   if (!kode || !userId || !hadiah) {
     return res.status(400).json({ success: false, msg: 'Missing kode, userId, or hadiah' });
