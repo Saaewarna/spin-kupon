@@ -453,7 +453,6 @@ function getRandomHadiahIndexByWeight() {
 
 function spin() {
   const spinBtn = document.querySelector(".spin-btn");
-  const wheel = document.getElementById("wheel");
   const userId = document.getElementById("user-id").value.trim();
   const kode = document.getElementById("kupon").value.trim();
 
@@ -465,50 +464,44 @@ function spin() {
   spinBtn.style.opacity = 0.6;
 
   const sliceAngle = 360 / hadiahList.length;
+  const index = getRandomHadiahIndexByWeight(); // 🔥 ini penting!
   const baseRotation = 360 * 10;
   const offset = (Math.random() - 0.5) * sliceAngle * 0.8;
-  const index = getRandomHadiahIndexByWeight();
   const stopAngle = index * sliceAngle + sliceAngle / 2 + offset;
+  const finalRotation = baseRotation + stopAngle;
 
-  const rotationAngle = 270; // supaya pointer di jam 12
-  const finalRotation = baseRotation + stopAngle + rotationAngle;
-
+  // Muter animasi
   wheel.style.transition = 'transform 6s cubic-bezier(0.33, 1, 0.68, 1)';
   wheel.style.transform = `rotate(${finalRotation}deg)`;
 
   setTimeout(() => {
-  const rotationAngle = 270; // karena pointer ada di atas (jam 12)
-  const landedDeg = (finalRotation % 360 + 360) % 360;
+    hadiahTerpilih = hadiahList[index]?.text || "Zonk";
 
-  const correctedDeg = (landedDeg - rotationAngle + 360) % 360;
-  const landedIndex = Math.floor((correctedDeg + sliceAngle / 2) / sliceAngle) % hadiahList.length;
+    alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
+    pushLiveFeed(userId, hadiahTerpilih);
 
-  hadiahTerpilih = hadiahList[landedIndex].text;
+    fetch("/api/log-spin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
+    });
 
-  alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
-  pushLiveFeed(userId, hadiahTerpilih);
+    spinBtn.textContent = hadiahTerpilih.toLowerCase().includes("zonk")
+      ? "Coba Lagi 🔁"
+      : "🎁 Klaim Hadiah";
+    spinBtn.disabled = false;
+    spinBtn.style.opacity = 1;
+    spinBtn.onclick = () => {
+      if (hadiahTerpilih.toLowerCase().includes("zonk")) {
+        location.reload();
+      } else {
+        window.location.href = "https://direct.lc.chat/14680344/";
+      }
+    };
 
-  fetch("/api/log-spin", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
-  });
-
-  spinBtn.textContent = hadiahTerpilih.toLowerCase().includes("zonk")
-    ? "Coba Lagi 🔁"
-    : "🎁 Klaim Hadiah";
-  spinBtn.disabled = false;
-  spinBtn.style.opacity = 1;
-  spinBtn.onclick = () => {
-    if (hadiahTerpilih.toLowerCase().includes("zonk")) {
-      location.reload();
-    } else {
-      window.location.href = "https://direct.lc.chat/14680344/";
-    }
-  };
-
-  isSpinning = false;
-}, 6200);
+    isSpinning = false;
+  }, 6200);
+}
 
 function initWheel() {
   const canvasEl = document.getElementById("canvas");
