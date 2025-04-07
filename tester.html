@@ -313,7 +313,17 @@ gsap.fromTo(".pointer",
     let usedCoupons = new Set();
 
     function highlightWinnerSegment() {
-  const segment = theWheel.getIndicatedSegment();
+  const anglePerSegment = 360 / hadiahList.length;
+  const stopAngle = theWheel.animation.stopAngle % 360;
+  const winnerIndex = Math.floor(((360 - stopAngle + 270) % 360) / anglePerSegment);
+
+  // reset warna
+  theWheel.segments.forEach((seg, i) => seg.fillStyle = hadiahList[i].color);
+  // ubah warna slice yang menang
+  theWheel.segments[winnerIndex].fillStyle = '#fff176';
+  theWheel.draw();
+
+  // efek glow di canvas
   const canvas = document.getElementById('canvas');
   canvas.style.boxShadow = "0 0 30px #fff, 0 0 60px #ff4081";
   setTimeout(() => {
