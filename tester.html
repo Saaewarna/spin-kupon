@@ -91,17 +91,16 @@
       align-items: center;
     }
 
-.leaderboard, .live-feed {
-  background: white;
-  border: 2px solid #ddd;
-  border-radius: 12px;
-  padding: 15px 20px;
-  width: 100%;
-  max-width: 320px;
-  min-height: 280px; /* ✅ Ini bikin dua kotak tingginya sama */
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
-
+    .leaderboard, .live-feed {
+      background: white;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      padding: 15px 20px;
+      width: 100%;
+      max-width: 320px;
+      min-height: 280px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
 
     .leaderboard h3, .live-feed h3 {
       margin: 0 0 12px;
@@ -161,23 +160,29 @@
       border-radius: 50%;
       background: #fff;
       width: 100%;
+      box-shadow: 0 0 10px gold;
     }
 
     .pointer {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      border-left: 20px solid transparent;
-      border-right: 20px solid transparent;
-      border-top: 30px solid red;
-      z-index: 2;
-    }
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 30px solid red;
+  z-index: 10;
+
+  /* Ini yang penting biar goyangnya dari atas */
+  transform-origin: top center;
+}
+
 
     .spin-btn {
       margin-top: 20px;
-      background-color: #007bff;
-      color: white;
+      background-color: #ffee00;
+      color: rgb(0, 0, 0);
+      animation: pulse 1s infinite;
     }
 
     .spin-btn:hover {
@@ -185,27 +190,142 @@
     }
 
     .spin-log {
-      margin: 40px auto 0;
-      background: #fff;
-      border: 2px solid #eee;
-      border-radius: 10px;
-      padding: 20px;
-      max-width: 800px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
+  margin: 40px auto 0;
+  background: #fff;
+  border: 2px solid #eee;
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 800px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
 
-    .live-feed li {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      animation: slideFadeIn 0.5s ease forwards;
-      padding: 6px 0;
-      border-bottom: 1px dashed #ccc;
-    }
+.spin-log h3 {
+  margin: 0; /* 👈 ini yang ngilangin jarak di atas */
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px dashed #ccc;
+  padding-bottom: 8px;
+}
 
-    .live-feed li:last-child {
-      border-bottom: none;
+.spin-log, .leaderboard, .live-feed {
+  background: linear-gradient(145deg, #ffffff, #f9f9f9);
+}
+
+.leaderboard li span:first-child {
+  flex-grow: 1;
+}
+
+.leaderboard {
+  border-top: 4px solid #f44336; /* merah */
+}
+.live-feed {
+  border-top: 4px solid #ff9800; /* oranye */
+}
+.spin-log {
+  border-top: 4px solid #2196f3; /* biru */
+}
+
+.live-feed li:hover, .spin-log li:hover {
+  background-color: #f5f5f5;
+  cursor: default;
+}
+
+.spin-log li {
+  display: grid;
+  grid-template-columns: 24px 1fr 24px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.spin-log li {
+  animation: fadeSlideIn 0.4s ease-in-out;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.spin-log, .leaderboard, .live-feed {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
+}
+
+.leaderboard li,
+.leaderboard li span {
+  font-weight: bold;
+}
+
+.pin {
+  width: 8px;
+  height: 8px;
+  background: #333;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 5;
+}
+
+.spin-btn.success {
+  background-color: #ffee00;
+  color: black;
+  font-weight: bold;
+  animation: pulse 1s infinite;
+  box-shadow: 0 0 15px #ff0;
+  border: none;
+  cursor: pointer;
+}
+.spin-btn.success {
+  background-color: #ffeb3b; /* Kuning terang */
+  color: #000; /* Tulisan hitam biar kontras */
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 20px 5px rgba(255, 235, 59, 0.9); /* glowing kuning */
+  animation: glowPulse 1s infinite;
+  transition: all 0.3s ease;
+}
+
+.spin-btn.success {
+  opacity: 1 !important;
+}
+.pointer {
+  animation: glowPulse 1s infinite;
+}
+
+@keyframes glowPulse {
+  0% { filter: drop-shadow(0 0 4px #fff); }
+  50% { filter: drop-shadow(0 0 10px red); }
+  100% { filter: drop-shadow(0 0 4px #fff); }
+}
+
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 10px 2px rgba(255, 235, 59, 0.7); }
+  50% { box-shadow: 0 0 25px 10px rgba(255, 235, 59, 1); }
+  100% { box-shadow: 0 0 10px 2px rgba(255, 235, 59, 0.7); }
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0px #ff0; transform: scale(1); }
+  50% { box-shadow: 0 0 20px #ff0; transform: scale(1.05); }
+  100% { box-shadow: 0 0 0px #ff0; transform: scale(1); }
+}
+
+@keyframes glow {
+  0% { box-shadow: 0 0 10px gold; }
+  50% { box-shadow: 0 0 30px #fff200; }
+  100% { box-shadow: 0 0 10px gold; }
+}
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
 
     @keyframes slideFadeIn {
@@ -221,29 +341,21 @@
       80% { color: #ff6d00; }
       100% { color: #000; }
     }
-    #canvas {
-  box-shadow: 0 0 20px #fff176, 0 0 40px #f06292, 0 0 60px #ba68c8;
+    @keyframes popLog {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
-
-.wheel-container::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  width: calc(100% + 20px);
-  height: calc(100% + 20px);
-  border-radius: 50%;
-  background-image: radial-gradient(#fff9c4 10%, transparent 11%);
-  background-size: 12px 12px;
-  z-index: 0;
-  animation: sparkle 1.5s linear infinite;
+@keyframes wiggle {
+  0%, 100% { transform: translateX(-50%) rotate(0deg); }
+  25% { transform: translateX(-50%) rotate(4deg); }
+  50% { transform: translateX(-50%) rotate(-4deg); }
+  75% { transform: translateX(-50%) rotate(2deg); }
 }
-
-@keyframes sparkle {
-  0% { transform: rotate(0); }
-  100% { transform: rotate(360deg); }
+#wheel {
+  width: 100%;
+  transition: transform 6s cubic-bezier(0.33, 1, 0.68, 1);
+  transform: rotate(0deg);
 }
-
   </style>
 </head>
 <body>
@@ -261,11 +373,11 @@
       <div class="leaderboard">
         <h3>🎯 Leaderboard Hadiah</h3>
         <ul>
-          <li>📱 iPhone 16 Pro Max</li>
-          <li>⌚ Realme Watch 3</li>
-          <li>💸 Kredit Kuningtoto <span>(100.000)</span></li>
-          <li>🎟️ Kredit Kuningtoto <span>(10.000)</span></li>
-          <li>💀 Zonk <span>(😅)</span></li>
+            <li>📱&nbsp;<span>iPhone 16 Pro Max</span></li>
+            <li>⌚&nbsp;<span>Realme Watch 3</span></li>
+            <li>💰&nbsp;<span>Kredit Kuningtoto</span> <span>(100.000)</span></li>
+            <li>💰&nbsp;<span>Kredit Kuningtoto</span> <span>(10.000)</span></li>
+            <li>💀&nbsp;<span>Zonk</span> <span>(😅)</span></li>            
         </ul>
         <div class="user-info" id="user-info" style="display: none;">
           🧑‍💻 Pengguna: <span id="user-label">-</span>
@@ -280,96 +392,80 @@
     <div id="wheel-section">
       <div class="wheel-container">
         <div class="pointer"></div>
-        <canvas id="canvas" width="500" height="500"></canvas>
+        <img id="wheel" src="https://projectwarna.com/kuningtoto/Wheel-Of-Fortune.png" alt="Wheel" style="width: 100%; transform: rotate(0deg); transition: transform 6s cubic-bezier(0.33, 1, 0.68, 1);">
       </div>
       <button class="spin-btn" onclick="spin()">Spin Sekarang!</button>
     </div>
   </div>
+
   <div class="spin-log" id="spin-log" style="display:none;">
     <h3>📝 Log Hasil Spin</h3>
     <ul id="log-list"></ul>
   </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/zarocknz/javascript-winwheel/Winwheel.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/zarocknz/javascript-winwheel/Winwheel.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
-const hadiahList = [
-  { text: 'Iphone 16 Pro Max', weight: 0.5, color: '#FFD700' },
-  { text: 'Realme Watch 3', weight: 2, color: '#FF69B4' },
-  { text: 'Kredit 100.000', weight: 4, color: '#7CFC00' },
-  { text: 'Kredit 10.000', weight: 5, color: '#40E0D0' },
-  { text: 'Zonk', weight: 88.5, color: '#D3D3D3' }
-];
-
-gsap.fromTo(".pointer", 
-  { y: -5 }, 
-  { y: 0, duration: 0.1, repeat: 5, yoyo: true, ease: "power1.inOut" }
-);
+    const hadiahList = [
+      { text: 'Iphone 16 Pro Max', weight: 0.1, color: '#eae56f' },
+      { text: 'Realme Watch 3', weight: 0.5, color: '#89f26e' },
+      { text: 'Kredit 100.000', weight: 0.5, color: '#7de6ef' },
+      { text: 'Kredit 10.000', weight: 0.5, color: '#e7706f' },
+      { text: 'Zonk', weight: 94.5, color: '#aaa' }
+    ];
 
     let theWheel;
     let hadiahTerpilih = '';
     let usedCoupons = new Set();
 
-    function highlightWinnerSegment() {
-  const anglePerSegment = 360 / hadiahList.length;
-  const stopAngle = theWheel.animation.stopAngle % 360;
-  const winnerIndex = Math.floor(((360 - stopAngle + 270) % 360) / anglePerSegment);
-
-  // reset warna
-  theWheel.segments.forEach((seg, i) => seg.fillStyle = hadiahList[i].color);
-  // ubah warna slice yang menang
-  theWheel.segments[winnerIndex].fillStyle = '#fff176';
-  theWheel.draw();
-
-  // efek glow di canvas
-  const canvas = document.getElementById('canvas');
-  canvas.style.boxShadow = "0 0 30px #fff, 0 0 60px #ff4081";
-  setTimeout(() => {
-    canvas.style.boxShadow = "";
-  }, 1000);
+    function getRandomHadiahIndexByWeight() {
+  const total = hadiahList.reduce((sum, h) => sum + h.weight, 0);
+  const rand = Math.random() * total;
+  let acc = 0;
+  for (let i = 0; i < hadiahList.length; i++) {
+    acc += hadiahList[i].weight;
+    if (rand <= acc) return i;
+  }
+  return hadiahList.length - 1;
 }
 
-    function getRandomHadiah() {
-      const total = hadiahList.reduce((sum, h) => sum + h.weight, 0);
-      const rand = Math.random() * total;
-      let acc = 0;
-      for (let h of hadiahList) {
-        acc += h.weight;
-        if (rand <= acc) return h.text;
-      }
-      return hadiahList[hadiahList.length - 1].text;
-    }
+function cekKupon() {
+  const kode = document.getElementById("kupon").value.trim();
+  const userId = document.getElementById("user-id").value.trim();
+  console.log('Cek kupon kirim:', { kode, userId });
 
-    function cekKupon() {
-      const kode = document.getElementById("kupon").value.trim();
-      const userId = document.getElementById("user-id").value.trim();
-      if (!userId || !kode) return alert("⚠️ Lengkapi ID dan kupon dulu!");
-      if (usedCoupons.has(kode)) return alert("⛔ Kupon ini sudah dipakai!");
+  if (!userId || !kode) return alert("⚠️ Lengkapi ID dan kupon dulu!");
+  if (usedCoupons.has(kode)) return alert("⛔ Kupon ini sudah dipakai!");
 
-      fetch(`http://127.0.0.1:5500/check-kupon?kode=${kode}&user=${userId}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.valid) {
-            usedCoupons.add(kode);
-            document.getElementById("user-label").textContent = userId;
-            document.getElementById("user-info").style.display = "block";
-            document.getElementById("wheel-section").style.display = "flex";
-            initWheel();
-          } else {
-            alert("❌ " + data.msg);
-          }
-        })
-        .catch(() => alert("⚠️ Gagal cek kupon. Pastikan server jalan!"));
-    }
+  fetch("/api/check-kupon", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ kode, user: userId })
+  })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success) {
+        alert("❌ " + (data.msg || data.error || "Gagal menyimpan hasil."));
+        return;
+        }
 
-    function initWheel() {
-  const hadiahIndex = getRandomHadiahIndexByWeight();
-  hadiahTerpilih = hadiahList[hadiahIndex].text;
+      usedCoupons.add(kode);
+      document.getElementById("user-label").textContent = userId;
+      document.getElementById("user-info").style.display = "block";
+      document.getElementById("wheel-section").style.display = "flex";
+      initWheel();
+    })
+    .catch(() => alert("⚠️ Gagal cek kupon. Pastikan server jalan!"));
+}
 
-  const anglePerSegment = 360 / hadiahList.length;
-  const stopAngle = 270 - (hadiahIndex * anglePerSegment) - (anglePerSegment / 2); // 🔥 match pointer jam 12
+function initWheel() {
+  const canvasEl = document.getElementById("canvas");
+  const pointerEl = document.querySelector(".pointer");
+  const tickSound = new Audio('https://projectwarna.com/assets/tick.mp3');
+  const winSound = new Audio('https://projectwarna.com/assets/win.mp3');
 
   theWheel = new Winwheel({
     canvasId: 'canvas',
@@ -378,55 +474,98 @@ gsap.fromTo(".pointer",
       fillStyle: item.color,
       text: item.text
     })),
-    rotationAngle: 270, // pointer di atas (jam 12)
     animation: {
       type: 'spinToStop',
       duration: 6,
       spins: 10,
       easing: 'easeInOutCirc',
-      stopAngle, // ini yang bikin pas
       callbackSound: tickSound,
       soundTrigger: 'segment',
       callbackFinished: () => {
-        highlightWinnerSegment();
-        showSpark();
-        alert("🎉 Kamu mendapatkan: " + hadiahTerpilih);
+        const hadiahIndex = hadiahIndexGlobal;
+        hadiahTerpilih = hadiahList[hadiahIndex]?.text || "Zonk"; // ⬅️ extra safe
 
-        const userId = document.getElementById("user-id").value.trim();
-        const kode = document.getElementById("kupon").value.trim();
+        const anglePerSegment = 360 / hadiahList.length;
+        const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9);
+        theWheel.animation.stopAngle = (hadiahIndex * anglePerSegment) + (anglePerSegment / 2) + variation;
 
-        fetch("http://127.0.0.1:5500/log-spin", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            const logItem = document.createElement("li");
-            logItem.textContent = `🥇 ${userId} → 🏱 ${hadiahTerpilih}`;
-            document.getElementById("log-list").prepend(logItem);
-            document.getElementById("spin-log").style.display = "block";
-            pushLiveFeed(userId, hadiahTerpilih);
-          } else {
-            alert("❌ Gagal log spin: " + data.msg);
-          }
-        });
+  const userId = document.getElementById("user-id")?.value.trim();
+  const kode = document.getElementById("kupon")?.value.trim();
+
+  fetch("/api/log-spin", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
+  })
+  .then(res => res.json())
+.then(data => {
+  console.log('Respon backend:', data);
+  if (!data.success) {
+  alert("❌ " + (data.msg || data.error || "Gagal menyimpan hasil."));
+  return;
+}
+
+      setTimeout(() => {
+  confetti({ particleCount: 180, spread: 90, origin: { y: 0.6 } });
+  new Audio('https://projectwarna.com/assets/win.mp3').play();
+  alert("🎉 Kamu mendapatkan: " + hadiahTerpilih);
+
+  const btn = document.querySelector('.spin-btn');
+
+  if (hadiahTerpilih.toLowerCase().includes("zonk")) {
+  btn.textContent = "Refresh Disini";
+  btn.onclick = () => location.reload(); // 🌀 RELOAD halaman
+  btn.classList.remove("success");
+  btn.classList.add("zonk-btn");
+  btn.style.opacity = "1";
+  btn.removeAttribute("disabled");
+} else {
+  btn.textContent = "Klaim Hadiah 🎁";
+  btn.onclick = () => window.location.href = "https://direct.lc.chat/14680344/";
+  btn.classList.add("success");
+  btn.removeAttribute("disabled");
+}
+}, 300);
+    })
+    .catch(() => {
+      alert("⚠️ Gagal koneksi ke server.");
+    });
       }
     }
   });
 }
 
+function spin() {
+  const spinBtn = document.querySelector(".spin-btn");
+  const canvasEl = document.getElementById("canvas");
+  const pointer = document.querySelector('.pointer');
 
-      });
-      const index = hadiahList.findIndex(h => h.text === hadiahTerpilih);
-      const anglePerSegment = 360 / hadiahList.length;
-      theWheel.animation.stopAngle = (index * anglePerSegment) + (anglePerSegment / 2);
-    }
+  if (theWheel && !spinBtn.disabled) {
+    spinBtn.disabled = true;
+    spinBtn.style.opacity = 0.6;
+    spinBtn.textContent = "⏳ Memutar...";
 
-    function spin() {
-      if (theWheel) theWheel.startAnimation();
+    hadiahIndexGlobal = getRandomHadiahIndexByWeight(); // ✅ ambil & simpan
+    hadiahTerpilih = hadiahList[hadiahIndexGlobal].text;
+
+    const anglePerSegment = 360 / hadiahList.length;
+    const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9);
+    const stopAngle = (hadiahIndexGlobal * anglePerSegment) + (anglePerSegment / 2) + variation;
+    theWheel.animation.stopAngle = stopAngle;
+
+    theWheel.startAnimation();
+
+    canvasEl.style.boxShadow = "0 0 30px 10px #FFD700";
+    setTimeout(() => {
+      canvasEl.style.boxShadow = "0 0 10px gold";
+    }, 5000);
+
+    if (pointer) {
+      pointer.style.animation = 'wiggle 0.2s ease-in-out infinite';
+      setTimeout(() => pointer.style.animation = 'none', 6000);
     }
+  }
+}
 
     function showSpark() {
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.3 } });
@@ -454,6 +593,7 @@ gsap.fromTo(".pointer",
     list.removeChild(list.lastChild);
   }
 }
+const dummyChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.split('');
 // Daftar ID palsu dari file kamu
 const fakeUserList = [
   "RAHULJP", "Aryoisroi", "bendol", "Bohlakom", "wakslot", "rezal1004", "komerbontot", "asep22", 
@@ -473,12 +613,12 @@ function maskUser(userId) {
   }
 
   function randomString(length) {
-    let result = '';
-    for (let i = 0; i < length; i++) {
-      result += dummyChars[Math.floor(Math.random() * dummyChars.length)];
-    }
-    return result;
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += dummyChars[Math.floor(Math.random() * dummyChars.length)];
   }
+  return result;
+}
 
   function getMixedUser() {
     return Math.random() < 0.7 ? fakeUsers[Math.floor(Math.random() * fakeUsers.length)] : randomUserId();
@@ -507,7 +647,7 @@ function maskUser(userId) {
 }
 
 // ⏱️ Jalankan terus-menerus
-setInterval(pushFakeLiveFeed, 1500);
-  </script>
+setInterval(pushFakeLiveFeed, 2000);
+</script>
 </body>
 </html>
