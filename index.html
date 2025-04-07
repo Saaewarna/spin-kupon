@@ -418,9 +418,10 @@
   return hadiahList.length - 1;
 }
 
-    function cekKupon() {
+function cekKupon() {
   const kode = document.getElementById("kupon").value.trim();
   const userId = document.getElementById("user-id").value.trim();
+  console.log('Cek kupon kirim:', { kode, userId });
 
   if (!userId || !kode) return alert("⚠️ Lengkapi ID dan kupon dulu!");
   if (usedCoupons.has(kode)) return alert("⛔ Kupon ini sudah dipakai!");
@@ -428,7 +429,7 @@
   fetch("/api/check-kupon", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ kode, user: userId })
+    body: JSON.stringify({ kode, userId }) // ✅ ganti ini
   })
     .then(res => res.json())
     .then(data => {
@@ -441,7 +442,7 @@
       document.getElementById("user-label").textContent = userId;
       document.getElementById("user-info").style.display = "block";
       document.getElementById("wheel-section").style.display = "flex";
-      initWheel(); // <-- ini panggil function yg ada DI LUAR
+      initWheel();
     })
     .catch(() => alert("⚠️ Gagal cek kupon. Pastikan server jalan!"));
 }
@@ -482,12 +483,13 @@ function initWheel() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
   })
-    .then(res => res.json())
-    .then(data => {
-      if (!data.success) {
-        alert("❌ Gagal log spin: " + data.msg);
-        return;
-      }
+  .then(res => res.json())
+.then(data => {
+  console.log('Respon backend:', data);
+  if (!data.valid) {
+    alert("❌ " + data.msg);
+    return;
+  }
 
       setTimeout(() => {
   confetti({ particleCount: 180, spread: 90, origin: { y: 0.6 } });
