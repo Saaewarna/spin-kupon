@@ -466,25 +466,22 @@ function spin() {
   const stopAngle = index * sliceAngle + (sliceAngle / 2) + offset;
   const finalRotation = baseRotation + stopAngle;
 
-  // Muter pake CSS
-  wheel.style.transition = 'transform 6s cubic-bezier(0.33, 1, 0.68, 1)';
+  // ✨ Muter wheel PNG
   wheel.style.transform = `rotate(${finalRotation}deg)`;
 
   setTimeout(() => {
     alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
-
-    // Push ke live feed
     pushLiveFeed(userId, hadiahTerpilih);
 
-    // Log ke backend
     fetch("/api/log-spin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
     });
 
-    // Ganti tombol buat next step
-    spinBtn.textContent = "🎁 Klaim Hadiah";
+    spinBtn.textContent = hadiahTerpilih.toLowerCase().includes("zonk")
+      ? "Coba Lagi 🔁"
+      : "🎁 Klaim Hadiah";
     spinBtn.disabled = false;
     spinBtn.style.opacity = 1;
     spinBtn.onclick = () => {
@@ -498,6 +495,7 @@ function spin() {
     isSpinning = false;
   }, 6200);
 }
+
 
 function initWheel() {
   const canvasEl = document.getElementById("canvas");
@@ -571,38 +569,6 @@ function initWheel() {
       }
     }
   });
-}
-
-function spin() {
-  const spinBtn = document.querySelector(".spin-btn");
-  const canvasEl = document.getElementById("canvas");
-  const pointer = document.querySelector('.pointer');
-
-  if (theWheel && !spinBtn.disabled) {
-    spinBtn.disabled = true;
-    spinBtn.style.opacity = 0.6;
-    spinBtn.textContent = "⏳ Memutar...";
-
-    hadiahIndexGlobal = getRandomHadiahIndexByWeight(); // ✅ ambil & simpan
-    hadiahTerpilih = hadiahList[hadiahIndexGlobal].text;
-
-    const anglePerSegment = 360 / hadiahList.length;
-    const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9);
-    const stopAngle = (hadiahIndexGlobal * anglePerSegment) + (anglePerSegment / 2) + variation;
-    theWheel.animation.stopAngle = stopAngle;
-
-    theWheel.startAnimation();
-
-    canvasEl.style.boxShadow = "0 0 30px 10px #FFD700";
-    setTimeout(() => {
-      canvasEl.style.boxShadow = "0 0 10px gold";
-    }, 5000);
-
-    if (pointer) {
-      pointer.style.animation = 'wiggle 0.2s ease-in-out infinite';
-      setTimeout(() => pointer.style.animation = 'none', 6000);
-    }
-  }
 }
 
     function showSpark() {
