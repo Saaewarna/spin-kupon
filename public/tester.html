@@ -686,6 +686,36 @@ function maskUser(userId) {
 
 // ⏱️ Jalankan terus-menerus
 setInterval(pushFakeLiveFeed, 2000);
+function cekKupon() {
+  const userId = document.getElementById("user-id").value.trim();
+  const kode = document.getElementById("kupon").value.trim();
+
+  if (!userId || !kode) {
+    alert("⚠️ Lengkapi ID dan kode kupon dulu!");
+    return;
+  }
+
+  fetch("/api/check-kupon", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ kode, user: userId })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.success) {
+      alert("❌ " + (data.msg || data.error || "Kupon tidak valid."));
+      return;
+    }
+
+    document.getElementById("user-label").textContent = userId;
+    document.getElementById("user-info").style.display = "block";
+    document.getElementById("wheel-section").style.display = "flex";
+  })
+  .catch(() => {
+    alert("⚠️ Gagal koneksi ke server.");
+  });
+}
+
 </script>
 </body>
 </html>
