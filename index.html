@@ -433,10 +433,10 @@ function cekKupon() {
   })
     .then(res => res.json())
     .then(data => {
-      if (!data.valid) {
-        alert("❌ " + data.msg);
+        if (!data.success) {
+        alert("❌ " + (data.msg || data.error || "Gagal menyimpan hasil."));
         return;
-      }
+        }
 
       usedCoupons.add(kode);
       document.getElementById("user-label").textContent = userId;
