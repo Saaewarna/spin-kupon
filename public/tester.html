@@ -505,42 +505,34 @@ setTimeout(() => {
   isSpinning = false;
 }, SPIN_DURATION);
 
-fetch("/api/log-spin", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
-})
-.then(res => res.json())
-.then(data => {
-  console.log("Respon backend:", data);
-  if (!data.success) {
-    alert("❌ " + (data.msg || data.error || "Gagal menyimpan hasil."));
+  function cekKupon() {
+    spinBtn.disabled = false;
+    spinBtn.textContent = "Spin Sekarang!";
     return;
+
+    fetch("/api/check-kupon", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ kode, user: userId })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        alert("❌ " + (data.msg || data.error || "Kupon tidak valid."));
+        return;
+      }
+
+      document.getElementById("user-label").textContent = userId;
+      document.getElementById("user-info").style.display = "block";
+      document.getElementById("wheel-section").style.display = "flex";
+      document.getElementById("wheel-section").scrollIntoView({ behavior: 'smooth' });
+    })
+    .catch(() => {
+      alert("⚠️ Gagal koneksi ke server.");
+    });
   }
+}
 
-  setTimeout(() => {
-    confetti({ particleCount: 180, spread: 90, origin: { y: 0.6 } });
-    new Audio("https://projectwarna.com/kuningtoto/win.mp3").play();
-    alert("🎉 Kamu mendapatkan: " + hadiahTerpilih);
-
-    const btn = document.querySelector(".spin-btn");
-    if (hadiahTerpilih.toLowerCase().includes("zonk")) {
-      btn.textContent = "Refresh Disini";
-      btn.onclick = () => location.reload();
-      btn.classList.remove("success");
-      btn.classList.add("zonk-btn");
-    } else {
-      btn.textContent = "Klaim Hadiah 🎁";
-      btn.onclick = () => window.location.href = "https://direct.lc.chat/14680344/";
-      btn.classList.add("success");
-    }
-    btn.style.opacity = "1";
-    btn.removeAttribute("disabled");
-  }, 300);
-})
-.catch(() => {
-  alert("⚠️ Gagal koneksi ke server.");
-});
 
     function showSpark() {
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.3 } });
