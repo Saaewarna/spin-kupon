@@ -489,6 +489,13 @@ setTimeout(() => {
   alert(`🎉 Kamu mendapatkan: ${hadiahTerpilih}`);
   pushLiveFeed(userId, hadiahTerpilih);
 
+  // Logging & tombol next
+  fetch("/api/log-spin", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
+  });
+
   spinBtn.textContent = hadiahTerpilih.toLowerCase().includes("zonk")
     ? "Coba Lagi 🔁"
     : "🎁 Klaim Hadiah";
@@ -504,6 +511,36 @@ setTimeout(() => {
 
   isSpinning = false;
 }, SPIN_DURATION);
+
+function initWheel() {
+  const canvasEl = document.getElementById("canvas");
+  const pointerEl = document.querySelector(".pointer");
+  const winSound = new Audio('https://projectwarna.com/kuningtoto/win.mp3');
+
+  theWheel = new Winwheel({
+    canvasId: 'canvas',
+    numSegments: hadiahList.length,
+    segments: hadiahList.map(item => ({
+      fillStyle: item.color,
+      text: item.text
+    })),
+    animation: {
+      type: 'spinToStop',
+      duration: 6,
+      spins: 10,
+      easing: 'easeInOutCirc',
+      callbackSound: tickSound,
+      soundTrigger: 'segment',
+      callbackFinished: () => {
+        const hadiahIndex = hadiahIndexGlobal;
+        hadiahTerpilih = hadiahList[hadiahIndex]?.text || "Zonk"; // ⬅️ extra safe
+
+        const anglePerSegment = 360 / hadiahList.length;
+        const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9);
+        theWheel.animation.stopAngle = (hadiahIndex * anglePerSegment) + (anglePerSegment / 2) + variation;
+
+  const userId = document.getElementById("user-id")?.value.trim();
+  const kode = document.getElementById("kupon")?.value.trim();
 
   fetch("/api/log-spin", {
     method: "POST",
@@ -544,6 +581,9 @@ setTimeout(() => {
       alert("⚠️ Gagal koneksi ke server.");
     });
       }
+    }
+  });
+}
 
     function showSpark() {
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.3 } });
@@ -579,6 +619,11 @@ const fakeUserList = [
   // ...dan seterusnya
 ];
 
+function maskUser(userId) {
+  if (userId.length <= 4) return userId;
+  return userId.slice(0, 3) + "****" + userId.slice(-2);
+}
+
   function randomUserId() {
     const front = randomString(3);
     const back = randomString(2);
@@ -593,19 +638,22 @@ const fakeUserList = [
   return result;
 }
 
-function getMixedUser() {
-  return Math.random() < 0.7
+  function getMixedUser() {
+    return Math.random() < 0.7 ? fakeUserList[Math.floor(Math.random() * fakeUserList.length)] : randomUserId();
+  }
+
+  function pushFakeLiveFeed() {
+  const hadiah = hadiahList[Math.floor(Math.random() * hadiahList.length)].text;
+
+  // 70% ambil dari ID palsu, 30% dummy random
+  const isFromList = Math.random() < 0.7;
+  let user = isFromList
     ? fakeUserList[Math.floor(Math.random() * fakeUserList.length)]
     : randomUserId();
-}
-
-function pushFakeLiveFeed() {
-  const hadiah = hadiahList[Math.floor(Math.random() * hadiahList.length)].text;
-  const user = getMixedUser(); // clean & rapi 😎
 
   const list = document.getElementById('live-list');
   const item = document.createElement('li');
-  item.textContent = `${maskUser(user)} baru saja mendapatkan ${hadiah}`;
+  item.textContent = `${maskUser(user)} baru saja mendapatkan ${hadiah}`; // 🔥 MASKING FIXED!
 
   const randomDelay = (Math.random() * 0.3 + 0.2).toFixed(2);
   item.style.opacity = 0;
@@ -623,12 +671,9 @@ function cekKupon() {
   const kode = document.getElementById("kupon").value.trim();
 
   if (!userId || !kode) {
-  alert("⚠️ Lengkapi ID dan kode kupon dulu!");
-  isSpinning = false;
-  spinBtn.disabled = false;
-  spinBtn.textContent = "Spin Sekarang!";
-  return;
-}
+    alert("⚠️ Lengkapi ID dan kode kupon dulu!");
+    return;
+  }
 
   fetch("/api/check-kupon", {
     method: "POST",
@@ -645,7 +690,6 @@ function cekKupon() {
     document.getElementById("user-label").textContent = userId;
     document.getElementById("user-info").style.display = "block";
     document.getElementById("wheel-section").style.display = "flex";
-    document.getElementById("wheel-section").scrollIntoView({ behavior: 'smooth' });
   })
   .catch(() => {
     alert("⚠️ Gagal koneksi ke server.");
