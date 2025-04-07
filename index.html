@@ -429,7 +429,7 @@ function cekKupon() {
   fetch("/api/check-kupon", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ kode, userId }) // ✅ ganti ini
+    body: JSON.stringify({ kode, user: userId })
   })
     .then(res => res.json())
     .then(data => {
