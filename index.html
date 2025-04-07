@@ -407,16 +407,16 @@
     let hadiahTerpilih = '';
     let usedCoupons = new Set();
 
-    function getRandomHadiah() {
-      const total = hadiahList.reduce((sum, h) => sum + h.weight, 0);
-      const rand = Math.random() * total;
-      let acc = 0;
-      for (let h of hadiahList) {
-        acc += h.weight;
-        if (rand <= acc) return h.text;
-      }
-      return hadiahList[hadiahList.length - 1].text;
-    }
+    function getRandomHadiahIndexByWeight() {
+  const total = hadiahList.reduce((sum, h) => sum + h.weight, 0);
+  const rand = Math.random() * total;
+  let acc = 0;
+  for (let i = 0; i < hadiahList.length; i++) {
+    acc += hadiahList[i].weight;
+    if (rand <= acc) return i;
+  }
+  return hadiahList.length - 1;
+}
 
     function cekKupon() {
   const kode = document.getElementById("kupon").value.trim();
@@ -467,8 +467,8 @@ function initWheel() {
       callbackSound: tickSound,
       soundTrigger: 'segment',
       callbackFinished: () => {
-  const selectedSegment = theWheel.getIndicatedSegment();
-  hadiahTerpilih = selectedSegment.text;
+        const hadiahIndex = getRandomHadiahIndexByWeight();
+        hadiahTerpilih = hadiahList[hadiahIndex].text;
 
   const userId = document.getElementById("user-id")?.value.trim();
   const kode = document.getElementById("kupon")?.value.trim();
@@ -503,8 +503,8 @@ function initWheel() {
 
         const index = hadiahList.findIndex(h => h.text === hadiahTerpilih);
         const anglePerSegment = 360 / hadiahList.length;
-        const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9);
-        theWheel.animation.stopAngle = (index * anglePerSegment) + (anglePerSegment / 2) + variation;
+        const variation = (Math.random() - 0.5) * (anglePerSegment * 0.9); // biar gak terlalu kaku
+        theWheel.animation.stopAngle = (hadiahIndex * anglePerSegment) + (anglePerSegment / 2) + variation;
       }
     }
   });
