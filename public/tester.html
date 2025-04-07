@@ -458,13 +458,16 @@ function spin() {
   spinBtn.style.opacity = 0.6;
 
   const index = getRandomHadiahIndexByWeight();
-  hadiahTerpilih = hadiahList[index].text;
+hadiahTerpilih = hadiahList[index].text;
 
-  const sliceAngle = 360 / hadiahList.length;
-  const baseRotation = 360 * 10;
-  const offset = (Math.random() - 0.5) * sliceAngle * 0.8;
-  const stopAngle = index * sliceAngle + (sliceAngle / 2) + offset;
-  const finalRotation = baseRotation + stopAngle;
+const sliceAngle = 360 / hadiahList.length;
+const baseRotation = 360 * 10;
+const offset = (Math.random() - 0.5) * sliceAngle * 0.8;
+const stopAngle = index * sliceAngle + (sliceAngle / 2) + offset;
+const finalRotation = baseRotation + stopAngle + 270; // pointer fix
+
+wheel.style.transform = `rotate(${finalRotation}deg)`;
+
 
   // ✨ Muter wheel PNG
   wheel.style.transform = `rotate(${finalRotation}deg)`;
