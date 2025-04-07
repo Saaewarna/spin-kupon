@@ -447,7 +447,6 @@
 }
 
 function initWheel() {
-  hadiahTerpilih = getRandomHadiah();
   const canvasEl = document.getElementById("canvas");
   const pointerEl = document.querySelector(".pointer");
   const tickSound = new Audio('https://projectwarna.com/assets/tick.mp3');
@@ -468,36 +467,39 @@ function initWheel() {
       callbackSound: tickSound,
       soundTrigger: 'segment',
       callbackFinished: () => {
-        const userId = document.getElementById("user-id")?.value.trim();
-        const kode = document.getElementById("kupon")?.value.trim();
+  const selectedSegment = theWheel.getIndicatedSegment();
+  hadiahTerpilih = selectedSegment.text;
 
-        fetch("/api/log-spin", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (!data.success) {
-              alert("❌ Gagal log spin: " + data.msg);
-              return;
-            }
+  const userId = document.getElementById("user-id")?.value.trim();
+  const kode = document.getElementById("kupon")?.value.trim();
 
-            setTimeout(() => {
-              confetti({ particleCount: 180, spread: 90, origin: { y: 0.6 } });
-              winSound.play();
-              alert("🎉 Kamu mendapatkan: " + hadiahTerpilih);
+  fetch("/api/log-spin", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        alert("❌ Gagal log spin: " + data.msg);
+        return;
+      }
 
-              const btn = document.querySelector('.spin-btn');
-              btn.textContent = "Klaim Hadiah 🎁";
-              btn.onclick = () => window.location.href = "https://direct.lc.chat/14680344/";
-              btn.classList.add("success");
-              btn.removeAttribute("disabled");
-            }, 300);
-          })
-          .catch(() => {
-            alert("⚠️ Gagal koneksi ke server.");
-          });
+      setTimeout(() => {
+        confetti({ particleCount: 180, spread: 90, origin: { y: 0.6 } });
+        new Audio('https://projectwarna.com/assets/win.mp3').play();
+        alert("🎉 Kamu mendapatkan: " + hadiahTerpilih);
+
+        const btn = document.querySelector('.spin-btn');
+        btn.textContent = "Klaim Hadiah 🎁";
+        btn.onclick = () => window.location.href = "https://direct.lc.chat/14680344/";
+        btn.classList.add("success");
+        btn.removeAttribute("disabled");
+      }, 300);
+    })
+    .catch(() => {
+      alert("⚠️ Gagal koneksi ke server.");
+    });
 
         const index = hadiahList.findIndex(h => h.text === hadiahTerpilih);
         const anglePerSegment = 360 / hadiahList.length;
