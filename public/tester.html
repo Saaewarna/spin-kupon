@@ -477,14 +477,15 @@ wheel.style.transform = `rotate(${finalRotation}deg)`;
 // 🔊 Tick sound selama spin
 const tickInterval = setInterval(() => {
   tickSound.currentTime = 0;
-  tickSound.play();
+  tickSound.play().catch((err) => {
+    console.warn("Tick sound blocked:", err);
+  });
 }, 120);
 
 // Stop tick sound setelah 6 detik
 setTimeout(() => {
   clearInterval(tickInterval);
 }, 6000);
-
 
   setTimeout(() => {
     hadiahTerpilih = hadiahList[index]?.text || "Zonk";
@@ -518,8 +519,11 @@ setTimeout(() => {
 function initWheel() {
   const canvasEl = document.getElementById("canvas");
   const pointerEl = document.querySelector(".pointer");
-  const tickSound = new Audio('https://projectwarna.com/kuningtoto/lucky-wheel.mp3');
-  const winSound = new Audio('https://projectwarna.com/assets/win.mp3');
+  const tickSound = new Audio('https://projectwarna.com/kuningtoto/tick.mp3');
+  tickSound.volume = 1;
+  tickSound.preload = 'auto';
+  tickSound.playbackRate = 1.2; // optional: lebih cepat
+  const winSound = new Audio('https://projectwarna.com/kuningtoto/win.mp3');
 
   theWheel = new Winwheel({
     canvasId: 'canvas',
@@ -561,7 +565,7 @@ function initWheel() {
 
       setTimeout(() => {
   confetti({ particleCount: 180, spread: 90, origin: { y: 0.6 } });
-  new Audio('https://projectwarna.com/assets/win.mp3').play();
+  new Audio('https://projectwarna.com/kuningtoto/win.mp3').play();
   alert("🎉 Kamu mendapatkan: " + hadiahTerpilih);
 
   const btn = document.querySelector('.spin-btn');
