@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spin Wheel Kupon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: url('https://w0.peakpx.com/wallpaper/422/383/HD-wallpaper-black-red-and-gold-gold-vector-red-black-lines-abstract.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        background-position: center top;
+        background-size: cover;
+      }
+    }
+
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .logo-kuningtoto {
+      max-width: 180px;
+      height: auto;
+    }
+
+    h2 {
+      color: white;
+      text-align: center;
+      margin-bottom: 10px;
+      text-shadow: 0 0 5px #000;
+      -webkit-text-stroke: 0.1px #000;
+    }
+
+    .form-kupon {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"], button {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      max-width: 250px;
+    }
+
+    button {
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
+      max-width: 150px;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .main-layout {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+
+.leaderboard, .live-feed {
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 15px 20px;
+  width: 100%;
+  max-width: 320px;
+  min-height: 280px; /* ✅ Ini bikin dua kotak tingginya sama */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+
+    .leaderboard h3, .live-feed h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      text-align: center;
+      color: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-bottom: 1px dashed #ccc;
+      padding-bottom: 8px;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      font-size: 15px;
+      padding: 8px 0;
+      border-bottom: 1px dashed #ccc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    li:last-child {
+      border-bottom: none;
+    }
+
+    .user-info {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #444;
+      text-align: center;
+    }
+
+    #wheel-section {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      max-width: 500px;
+    }
+
+    .wheel-container {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      aspect-ratio: 1 / 1;
+    }
+
+    #canvas {
+      border: 5px solid #ccc;
+      border-radius: 50%;
+      background: #fff;
+      width: 100%;
+    }
+
+    .pointer {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-top: 30px solid red;
+      z-index: 2;
+    }
+
+    .spin-btn {
+      margin-top: 20px;
+      background-color: #007bff;
+      color: white;
+    }
+
+    .spin-btn:hover {
+      background-color: #0056b3;
+    }
+
+    .spin-log {
+      margin: 40px auto 0;
+      background: #fff;
+      border: 2px solid #eee;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 800px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .live-feed li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      animation: slideFadeIn 0.5s ease forwards;
+      padding: 6px 0;
+      border-bottom: 1px dashed #ccc;
+    }
+
+    .live-feed li:last-child {
+      border-bottom: none;
+    }
+
+    @keyframes slideFadeIn {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes flickerText {
+      0% { color: #000; }
+      20% { color: #00c853; }
+      40% { color: #d500f9; }
+      60% { color: #2979ff; }
+      80% { color: #ff6d00; }
+      100% { color: #000; }
+    }
+    #canvas {
+  box-shadow: 0 0 20px #fff176, 0 0 40px #f06292, 0 0 60px #ba68c8;
+}
+
+.wheel-container::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  border-radius: 50%;
+  background-image: radial-gradient(#fff9c4 10%, transparent 11%);
+  background-size: 12px 12px;
+  z-index: 0;
+  animation: sparkle 1.5s linear infinite;
+}
+
+@keyframes sparkle {
+  0% { transform: rotate(0); }
+  100% { transform: rotate(360deg); }
+}
+
+  </style>
+</head>
+<body>
+  <div class="logo-container">
+    <img src="https://projectwarna.com/kuningtoto/LOGO-KUNINGTOTO.png" alt="Logo KuningToto" class="logo-kuningtoto">
+  </div>
+  <h2 style="color: rgb(255, 255, 255);">Masukkan Kode Kupon</h2>
+  <div class="form-kupon">
+    <input id="user-id" type="text" placeholder="Masukkan ID Pengguna">
+    <input id="kupon" type="text" placeholder="Masukkan Kode Kupon">
+    <button onclick="cekKupon()">Submit</button>
+  </div>
+  <div class="main-layout">
+    <div class="left-panel">
+      <div class="leaderboard">
+        <h3>🎯 Leaderboard Hadiah</h3>
+        <ul>
+          <li>📱 iPhone 16 Pro Max</li>
+          <li>⌚ Realme Watch 3</li>
+          <li>💸 Kredit Kuningtoto <span>(100.000)</span></li>
+          <li>🎟️ Kredit Kuningtoto <span>(10.000)</span></li>
+          <li>💀 Zonk <span>(😅)</span></li>
+        </ul>
+        <div class="user-info" id="user-info" style="display: none;">
+          🧑‍💻 Pengguna: <span id="user-label">-</span>
+        </div>
+      </div>
+      <div class="live-feed">
+        <h3>🔥 Aktivitas Terbaru</h3>
+        <ul id="live-list"></ul>
+      </div>
+    </div>
+
+    <div id="wheel-section">
+      <div class="wheel-container">
+        <div class="pointer"></div>
+        <canvas id="canvas" width="500" height="500"></canvas>
+      </div>
+      <button class="spin-btn" onclick="spin()">Spin Sekarang!</button>
+    </div>
+  </div>
+  <div class="spin-log" id="spin-log" style="display:none;">
+    <h3>📝 Log Hasil Spin</h3>
+    <ul id="log-list"></ul>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/gh/zarocknz/javascript-winwheel/Winwheel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+const hadiahList = [
+  { text: 'Iphone 16 Pro Max', weight: 0.5, color: '#FFD700' },
+  { text: 'Realme Watch 3', weight: 2, color: '#FF69B4' },
+  { text: 'Kredit 100.000', weight: 4, color: '#7CFC00' },
+  { text: 'Kredit 10.000', weight: 5, color: '#40E0D0' },
+  { text: 'Zonk', weight: 88.5, color: '#D3D3D3' }
+];
+
+gsap.fromTo(".pointer", 
+  { y: -5 }, 
+  { y: 0, duration: 0.1, repeat: 5, yoyo: true, ease: "power1.inOut" }
+);
+
+    let theWheel;
+    let hadiahTerpilih = '';
+    let usedCoupons = new Set();
+
+    function highlightWinnerSegment() {
+  const segment = theWheel.getIndicatedSegment();
+  const canvas = document.getElementById('canvas');
+  canvas.style.boxShadow = "0 0 30px #fff, 0 0 60px #ff4081";
+  setTimeout(() => {
+    canvas.style.boxShadow = "";
+  }, 1000);
+}
+
+    function getRandomHadiah() {
+      const total = hadiahList.reduce((sum, h) => sum + h.weight, 0);
+      const rand = Math.random() * total;
+      let acc = 0;
+      for (let h of hadiahList) {
+        acc += h.weight;
+        if (rand <= acc) return h.text;
+      }
+      return hadiahList[hadiahList.length - 1].text;
+    }
+
+    function cekKupon() {
+      const kode = document.getElementById("kupon").value.trim();
+      const userId = document.getElementById("user-id").value.trim();
+      if (!userId || !kode) return alert("⚠️ Lengkapi ID dan kupon dulu!");
+      if (usedCoupons.has(kode)) return alert("⛔ Kupon ini sudah dipakai!");
+
+      fetch(`http://127.0.0.1:5500/check-kupon?kode=${kode}&user=${userId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.valid) {
+            usedCoupons.add(kode);
+            document.getElementById("user-label").textContent = userId;
+            document.getElementById("user-info").style.display = "block";
+            document.getElementById("wheel-section").style.display = "flex";
+            initWheel();
+          } else {
+            alert("❌ " + data.msg);
+          }
+        })
+        .catch(() => alert("⚠️ Gagal cek kupon. Pastikan server jalan!"));
+    }
+
+    function initWheel() {
+      hadiahTerpilih = getRandomHadiah();
+      theWheel = new Winwheel({
+  canvasId: 'canvas',
+  numSegments: hadiahList.length,
+  segments: hadiahList.map(item => ({
+    fillStyle: item.color,
+    text: item.text
+  })),
+  rotationAngle: 270, // 🔥 Mulai dari jam 12
+  animation: {
+    type: 'spinToStop',
+    duration: 6,
+    spins: 10,
+    easing: 'easeInOutCirc',
+    callbackSound: tickSound,
+    soundTrigger: 'segment',
+    callbackFinished: () => {
+      // callback logic...
+    }
+  }
+});
+    highlightWinnerSegment();
+    showSpark();
+
+    const userId = document.getElementById("user-id").value.trim();
+    const kode = document.getElementById("kupon").value.trim();
+
+    fetch("http://127.0.0.1:5500/log-spin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, hadiah: hadiahTerpilih, kode })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("🎉 Kamu mendapatkan: " + hadiahTerpilih);
+        const logItem = document.createElement("li");
+        logItem.textContent = `🥇 ${userId} → 🏱 ${hadiahTerpilih}`;
+        document.getElementById("log-list").prepend(logItem);
+        document.getElementById("spin-log").style.display = "block";
+        pushLiveFeed(userId, hadiahTerpilih);
+      } else {
+        alert("❌ Gagal log spin: " + data.msg);
+      }
+    });
+  }
+}
+
+      });
+      const index = hadiahList.findIndex(h => h.text === hadiahTerpilih);
+      const anglePerSegment = 360 / hadiahList.length;
+      theWheel.animation.stopAngle = (index * anglePerSegment) + (anglePerSegment / 2);
+    }
+
+    function spin() {
+      if (theWheel) theWheel.startAnimation();
+    }
+
+    function showSpark() {
+      confetti({ particleCount: 150, spread: 70, origin: { y: 0.3 } });
+    }
+
+    function maskUser(userId) {
+      return userId.length <= 4 ? userId : userId.slice(0, 3) + '****' + userId.slice(-2);
+    }
+
+    function pushLiveFeed(user, hadiah) {
+  const list = document.getElementById('live-list');
+  const item = document.createElement('li');
+  item.textContent = `${maskUser(user)} baru saja mendapatkan ${hadiah}`;
+  item.style.opacity = 0;
+  list.prepend(item);
+
+  // Smooth fade-in
+  setTimeout(() => {
+    item.style.transition = 'opacity 0.6s ease-in-out';
+    item.style.opacity = 1;
+  }, 10);
+
+  // Max 5 entries
+  while (list.children.length > 5) {
+    list.removeChild(list.lastChild);
+  }
+}
+// Daftar ID palsu dari file kamu
+const fakeUserList = [
+  "RAHULJP", "Aryoisroi", "bendol", "Bohlakom", "wakslot", "rezal1004", "komerbontot", "asep22", 
+  "Kuningtoto00", "gacor432", "agung000", "samodarna", "gopalsin", "bedun", "tening", "Moana",
+  // ...dan seterusnya
+];
+
+function maskUser(userId) {
+  if (userId.length <= 4) return userId;
+  return userId.slice(0, 3) + "****" + userId.slice(-2);
+}
+
+  function randomUserId() {
+    const front = randomString(3);
+    const back = randomString(2);
+    return front + "****" + back;
+  }
+
+  function randomString(length) {
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += dummyChars[Math.floor(Math.random() * dummyChars.length)];
+    }
+    return result;
+  }
+
+  function getMixedUser() {
+    return Math.random() < 0.7 ? fakeUsers[Math.floor(Math.random() * fakeUsers.length)] : randomUserId();
+  }
+
+  function pushFakeLiveFeed() {
+  const hadiah = hadiahList[Math.floor(Math.random() * hadiahList.length)].text;
+
+  // 70% ambil dari ID palsu, 30% dummy random
+  const isFromList = Math.random() < 0.7;
+  let user = isFromList
+    ? fakeUserList[Math.floor(Math.random() * fakeUserList.length)]
+    : randomUserId();
+
+  const list = document.getElementById('live-list');
+  const item = document.createElement('li');
+  item.textContent = `${maskUser(user)} baru saja mendapatkan ${hadiah}`; // 🔥 MASKING FIXED!
+
+  const randomDelay = (Math.random() * 0.3 + 0.2).toFixed(2);
+  item.style.opacity = 0;
+  item.style.transform = 'translateY(10px)';
+  item.style.animation = `slideFadeIn 0.6s ease ${randomDelay}s forwards, flickerText 1.5s ease-in-out`;
+
+  list.prepend(item);
+  while (list.children.length > 5) list.removeChild(list.lastChild);
+}
+
+// ⏱️ Jalankan terus-menerus
+setInterval(pushFakeLiveFeed, 1500);
+  </script>
+</body>
+</html>
